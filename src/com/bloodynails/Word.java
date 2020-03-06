@@ -1,10 +1,6 @@
 package com.bloodynails;
 
 public class Word extends DBObj{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private Long listID;
 	private String wordLang1;
 	private String wordLang2;

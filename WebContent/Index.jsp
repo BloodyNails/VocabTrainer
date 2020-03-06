@@ -8,8 +8,6 @@
 <title>VocabTrainer - Main Menu</title>
 </head>
 <body>
-	<h3>Enter your Name</h3>
-	
 	<form action="Lists" method="get">
 		<label>Lists:</label>
 		<input type="submit">

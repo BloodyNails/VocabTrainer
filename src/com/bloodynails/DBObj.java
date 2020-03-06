@@ -1,12 +1,6 @@
 package com.bloodynails;
 
-import java.io.Serializable;
-
-public class DBObj implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class DBObj {
 	private Long id;
 	private DBObjType type;
 	
