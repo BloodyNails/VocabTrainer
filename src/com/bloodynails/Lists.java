@@ -32,6 +32,8 @@ public class Lists extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
+		//request.getRequestDispatcher("/Lists.jsp").forward(request, response);
+		
 		ArrayList<List> lists = getLists();
 		PrintWriter out = response.getWriter();
 		try {
@@ -39,8 +41,8 @@ public class Lists extends HttpServlet {
 			// TODO: print all lists at the right position html
 			out.println("<h3>"+lists.get(0).getDescription()+", "+lists.get(0).getLang1()+", "+lists.get(0).getLang2()+"</h3>");
 			out.println("<h3>"+lists.get(1).getDescription()+", "+lists.get(1).getLang1()+", "+lists.get(1).getLang2()+"</h3>");
-			DBManager.save(lists.get(1));
 			DBManager.save(lists.get(0));
+			DBManager.save(lists.get(1));
 			Word w = new Word(lists.get(0).getID(), "дерево", "Baum");
 			Word w2 = new Word(lists.get(0).getID(), "де́душка", "Opa");
 			DBManager.save(w);

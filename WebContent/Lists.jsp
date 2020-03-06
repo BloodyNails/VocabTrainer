@@ -7,11 +7,9 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="style-main.css">
 	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
-	<title>VocabTrainer - Main Menu</title>
+	<title>VocabTrainer - Lists</title>
 </head>
 <body>
-	<form action="Lists" method="GET">
-		<label>Lists:</label><input type="submit">
-	</form>
+	
 </body>
 </html>
