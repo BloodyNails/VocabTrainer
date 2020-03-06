@@ -3,13 +3,14 @@ package com.bloodynails;
 import java.util.LinkedHashMap;
 
 public class List extends DBObj{
+	private static Long ID = DBManager.getNextListID();
 	private String description;
 	private String lang1;
 	private String lang2;
 	private LinkedHashMap<String, String> words;
 	
 	public List (String description, String lang1, String lang2) {
-		super(DBManager.getNextListID(), DBObjType.LIST);
+		super(ID++, DBObjType.LIST);
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;
@@ -28,6 +29,7 @@ public class List extends DBObj{
 		return lang2;
 	}
 	
+	// redundant for now
 	public boolean addWord(Word word) {
 		if (word == null) 
 			return false;
@@ -37,6 +39,7 @@ public class List extends DBObj{
 		}
 	}
 	
+	// redundant as addWord has no use 
 	public LinkedHashMap<String, String> getWords() {
 		return words;
 	}

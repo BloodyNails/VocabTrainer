@@ -55,7 +55,7 @@ public class DBManager {
 			case WORD:
 				Word w = (Word) dbObj;
 				query = "INSERT INTO WORDS (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
-						+ w.getID().toString() + "', '" + w.getListID().toString() + "', '" + w.getWordLang1() + "', '"
+						+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1() + "', N'"
 						+ w.getWordLang2() + "')";
 				System.out.println(query + "\n");
 				try {
@@ -67,6 +67,7 @@ public class DBManager {
 					return false;
 				}
 			default:
+				query = "";
 				return false;
 		}
 	}
@@ -107,8 +108,20 @@ public class DBManager {
 
 	public static LinkedHashMap<String, String> getWordsByListID(Long id) {
 		LinkedHashMap<String, String> words = new LinkedHashMap<String, String>();
-		//final String query = "SELECT word_lang1, word_lang2 FROM vocabtrainer.words WHERE list_id = " + id + ";";
-		
+		final String query = "SELECT word_lang1, word_lang2 FROM vocabtrainer.words WHERE list_id = " + id + ";";
+		try {
+			s = connection.createStatement();
+			ResultSet rs = s.executeQuery(query);
+			while(rs.next()) {
+				String word1 = (String) rs.getObject("word_lang1");
+				String word2 = (String) rs.getObject("word_lang2");
+				System.out.println("word1: "+word1+", word2: "+word2);
+				words.put(word1, word2);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}		
 		return words;
 	}
 }

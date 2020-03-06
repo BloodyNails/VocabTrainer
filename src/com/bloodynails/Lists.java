@@ -3,6 +3,8 @@ package com.bloodynails;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,9 +39,16 @@ public class Lists extends HttpServlet {
 			// TODO: print all lists at the right position html
 			out.println("<h3>"+lists.get(0).getDescription()+", "+lists.get(0).getLang1()+", "+lists.get(0).getLang2()+"</h3>");
 			out.println("<h3>"+lists.get(1).getDescription()+", "+lists.get(1).getLang1()+", "+lists.get(1).getLang2()+"</h3>");
+			DBManager.save(lists.get(1));
 			DBManager.save(lists.get(0));
 			Word w = new Word(lists.get(0).getID(), "дерево", "Baum");
+			Word w2 = new Word(lists.get(0).getID(), "де́душка", "Opa");
 			DBManager.save(w);
+			DBManager.save(w2);
+			LinkedHashMap<String, String> words = DBManager.getWordsByListID(lists.get(0).getID());
+			for(Map.Entry<String, String> entry : words.entrySet()) {
+				out.println("<h3>"+entry.getKey()+", "+entry.getValue()+"</h3>");
+			}
 		}
 		finally {
 			out.close();
