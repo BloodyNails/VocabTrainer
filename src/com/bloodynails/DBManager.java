@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 public class DBManager {
 	
@@ -40,7 +41,7 @@ public class DBManager {
 
 		switch (dbObj.getType()) {
 			case LIST:
-				List l = (List) dbObj;
+				VocabList l = (VocabList) dbObj;
 				query = "INSERT INTO LISTS (list_id, description, lang1, lang2) " + "VALUES ('" + l.getID().toString()
 						+ "', '" + l.getDescription() + "', '" + l.getLang1() + "', '" + l.getLang2() + "')";
 				System.out.println(query + "\n");
@@ -104,6 +105,30 @@ public class DBManager {
 			e.printStackTrace();
 		}
 		return id;
+	}
+	
+	public static LinkedList<VocabList> getAllLists() {
+		
+		LinkedList<VocabList> lists = new LinkedList<VocabList>();
+		
+		final String query = "SELECT * FROM lists;";
+		try {
+			s = connection.createStatement();
+			ResultSet rs = s.executeQuery(query);
+			while(rs.next()) {
+				Long id = (Long) rs.getObject("list_id");
+				String description = (String) rs.getObject("description");
+				String lang1 = (String) rs.getObject("lang1");
+				String lang2 = (String) rs.getObject("lang2");
+				lists.add(new VocabList(id, description, lang1, lang2));
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		return lists;
 	}
 
 	public static LinkedHashMap<String, String> getWordsByListID(Long id) {

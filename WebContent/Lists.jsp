@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,8 +9,12 @@
 	<title>VocabTrainer - Lists</title>
 </head>
 <body>
-	<h3>дерево</h3>
-	<br>
-	<h3>дерево</h3>
+	<h3>List count: ${listCount}</h3>
+	
+	<ol>
+        <c:forEach var="list" items="${lists}">
+            <li>${list.description}</li>
+        </c:forEach>
+    </ol>
 </body>
 </html>

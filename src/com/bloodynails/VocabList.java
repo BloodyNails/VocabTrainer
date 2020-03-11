@@ -2,15 +2,23 @@ package com.bloodynails;
 
 import java.util.LinkedHashMap;
 
-public class List extends DBObj{
+public class VocabList extends DBObj{
 	private static Long ID = DBManager.getNextListID();
 	private String description;
 	private String lang1;
 	private String lang2;
 	private LinkedHashMap<String, String> words;
 	
-	public List (String description, String lang1, String lang2) {
+	public VocabList (String description, String lang1, String lang2) {
 		super(ID++, DBObjType.LIST);
+		this.description = description;
+		this.lang1 = lang1;
+		this.lang2 = lang2;
+		words = new LinkedHashMap<String, String>();
+	}
+	
+	public VocabList(Long id, String description, String lang1, String lang2) {
+		super(id, DBObjType.LIST);
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;

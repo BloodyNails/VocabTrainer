@@ -1,10 +1,8 @@
 package com.bloodynails;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,31 +29,30 @@ public class Lists extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		LinkedList<VocabList> lists = DBManager.getAllLists();
+		int listCount = lists.size();
+		
+		request.setAttribute("listCount", listCount);
+		
+		/*
+		for(int i = 0; i < listCount; i++) {
+			Long id = (Long) lists.get(i).getID();
+			String description = lists.get(i).getDescription();
+			String lang1 = lists.get(i).getLang1();
+			String lang2 = lists.get(i).getLang2();
+			request.setAttribute("description", description);
+			request.setAttribute("lang1", lang1);
+			request.setAttribute("lang2", lang2);
+			System.out.println(id+", "+description+", "+lang1+", "+lang2);
+		}
+		*/
+		
+		request.setAttribute("lists", lists);
+		
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		request.getRequestDispatcher("/Lists.jsp").forward(request, response);
-		
-		ArrayList<List> lists = getLists();
-		PrintWriter out = response.getWriter();
-		try {
-			// TODO: load an jsp file instead of printing this
-			// TODO: print all lists at the right position html
-			out.println("<h3>"+lists.get(0).getDescription()+", "+lists.get(0).getLang1()+", "+lists.get(0).getLang2()+"</h3>");
-			out.println("<h3>"+lists.get(1).getDescription()+", "+lists.get(1).getLang1()+", "+lists.get(1).getLang2()+"</h3>");
-			DBManager.save(lists.get(0));
-			DBManager.save(lists.get(1));
-			Word w = new Word(lists.get(0).getID(), "дерево", "Baum");
-			Word w2 = new Word(lists.get(0).getID(), "де́душка", "Opa");
-			DBManager.save(w);
-			DBManager.save(w2);
-			LinkedHashMap<String, String> words = DBManager.getWordsByListID(lists.get(0).getID());
-			for(Map.Entry<String, String> entry : words.entrySet()) {
-				out.println("<h3>"+entry.getKey()+", "+entry.getValue()+"</h3>");
-			}
-		}
-		finally {
-			out.close();
-		}
 	}
 
 	/**
@@ -64,13 +61,6 @@ public class Lists extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
-	}
-	
-	private static ArrayList<List> getLists() {
-		ArrayList<List> lists = new ArrayList<List>();
-		lists.add(new List("Familie", "Russisch", "Deutsch"));
-		lists.add(new List("Heirat", "Russisch", "Deutsch"));
-		return lists;
 	}
 
 }
