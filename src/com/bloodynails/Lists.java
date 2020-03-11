@@ -31,8 +31,9 @@ public class Lists extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-		//request.getRequestDispatcher("/Lists.jsp").forward(request, response);
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
+		request.getRequestDispatcher("/Lists.jsp").forward(request, response);
 		
 		ArrayList<List> lists = getLists();
 		PrintWriter out = response.getWriter();
