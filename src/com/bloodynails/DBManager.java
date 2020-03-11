@@ -149,4 +149,25 @@ public class DBManager {
 		}		
 		return words;
 	}
+
+	public static VocabList getListByID(Long id) {
+		VocabList list = null;
+		final String query = "SELECT * FROM lists WHERE list_id = "+id+";";
+		
+		try {
+			s = connection.createStatement();
+			ResultSet rs = s.executeQuery(query);
+			while(rs.next()) {
+				String description = (String) rs.getObject("description");
+				String lang1 = (String) rs.getObject("lang1");
+				String lang2 = (String) rs.getObject("lang2");
+				list = new VocabList(id, description, lang1, lang2);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return list;
+	}
 }

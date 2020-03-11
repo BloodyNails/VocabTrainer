@@ -6,11 +6,9 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/style-main.css"/>"/>
 	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
-	<title>VocabTrainer - Main Menu</title>
+	<title>VocabTrainer - Detail View</title>
 </head>
 <body>
-	<form action="Lists" method="GET">
-		<label>Lists:</label><input type="submit">
-	</form>
+	<h1>Detail View of</h1>
 </body>
 </html>
