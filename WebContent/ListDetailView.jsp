@@ -32,5 +32,14 @@
 		</tbody>
     </table>
     
+   	<form action="" method="POST">
+   		<label>wordLang1:</label>
+		<input type="text" value="" name="wordLang1">
+		<br>
+		<label>wordLang2:</label>
+		<input type="text" value="" name="wordLang2">
+		<br>
+		<input type="submit" value="submit">
+	</form>
 </body>
 </html>

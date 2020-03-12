@@ -1,16 +1,16 @@
 package com.bloodynails;
 
 public class DBObj {
-	private Long id;
+	private Long ID;
 	private DBObjType type;
 	
 	public DBObj(Long id, DBObjType type) {
-		this.id = id;
+		this.ID = id;
 		this.type = type;
 	}
 	
 	public Long getID() {
-		return this.id;
+		return this.ID;
 	}
 	
 	public DBObjType getType() {

@@ -1,30 +1,30 @@
 package com.bloodynails;
 
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 public class VocabList extends DBObj{
-	private static Long ID = DBManager.getNextListID();
+	private Long ID;
 	private String description;
 	private String lang1;
 	private String lang2;
-	private LinkedHashMap<String, String> words;
+	private LinkedList<Word> words;
 	
 	public VocabList (String description, String lang1, String lang2) {
-		super(ID++, DBObjType.LIST);
-		
+		super(DBManager.getNextListID(), DBObjType.LIST);
+		this.ID = DBManager.getNextListID();
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;
-		words = new LinkedHashMap<String, String>();
+		fillWordsFromDB();
 	}
 	
-	public VocabList(Long id, String description, String lang1, String lang2) {
-		super(id, DBObjType.LIST);
-		
+	public VocabList(Long listID, String description, String lang1, String lang2) {
+		super(listID, DBObjType.LIST);
+		this.ID = listID;
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;
-		words = new LinkedHashMap<String, String>();
+		fillWordsFromDB();
 	}
 	
 	public String getDescription() {
@@ -44,14 +44,27 @@ public class VocabList extends DBObj{
 		if (word == null) 
 			return false;
 		else {
-			words.put(word.getWordLang1(), word.getWordLang2());
+			words.add(word);
+			DBManager.save(word);
 			return true;
 		}
 	}
 	
 	// redundant as addWord has no use 
-	public LinkedHashMap<String, String> getWords() {
+	public LinkedList<Word> getWords() {
 		return words;
+	}
+	
+	public boolean fillWordsFromDB() {
+		LinkedList<Word> words = DBManager.getWordsByListID(this.ID);
+		if(words.isEmpty() || words == null) {
+			words = new LinkedList<Word>();
+			return false;
+		}
+		else {
+			this.words = words;
+			return true;	
+		}
 	}
 
 }

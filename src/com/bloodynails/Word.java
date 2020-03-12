@@ -1,14 +1,14 @@
 package com.bloodynails;
 
 public class Word extends DBObj{
-	private static long ID = DBManager.getNextWordID();
+	private Long ID;
 	private Long listID;
 	private String wordLang1;
 	private String wordLang2;
 	
 	public Word(Long listID, String wordLang1, String wordLang2) {
-		super(ID++, DBObjType.WORD);
-		
+		super(DBManager.getNextWordID(), DBObjType.WORD);
+		this.ID = DBManager.getNextWordID();
 		this.listID = listID;
 		this.wordLang1 = wordLang1;
 		this.wordLang2 = wordLang2;
@@ -16,7 +16,7 @@ public class Word extends DBObj{
 	
 	public Word(Long wordID, Long listID, String wordLang1, String wordLang2) {
 		super(wordID, DBObjType.WORD);
-		
+		this.ID = wordID;
 		this.listID = listID;
 		this.wordLang1 = wordLang1;
 		this.wordLang2 = wordLang2;
