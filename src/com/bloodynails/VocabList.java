@@ -11,6 +11,7 @@ public class VocabList extends DBObj{
 	
 	public VocabList (String description, String lang1, String lang2) {
 		super(ID++, DBObjType.LIST);
+		
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;
@@ -19,6 +20,7 @@ public class VocabList extends DBObj{
 	
 	public VocabList(Long id, String description, String lang1, String lang2) {
 		super(id, DBObjType.LIST);
+		
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;

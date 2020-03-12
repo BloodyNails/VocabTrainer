@@ -1,6 +1,8 @@
 package com.bloodynails;
 
 import java.io.IOException;
+import java.util.LinkedList;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +22,10 @@ public class ListDetailView extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Long id = Long.parseLong(request.getParameter("id"));
 		VocabList list = DBManager.getListByID(id);
-		System.out.println("list: "+list.getID()+", "+list.getDescription()+", "+list.getLang1()+", "+list.getLang2());
+		LinkedList<Word> words = DBManager.getWordsByListID(list.getID());
+		
+		request.setAttribute("words", words);
+		request.setAttribute("list", list);
 		request.getRequestDispatcher("/ListDetailView.jsp").forward(request, response);
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

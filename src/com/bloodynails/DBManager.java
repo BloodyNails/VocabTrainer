@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 public class DBManager {
@@ -17,7 +16,7 @@ public class DBManager {
 	public static Connection getConnection() {
 		final String urlPrefix = "jdbc:mysql://localhost:3306/vocabtrainer";
 		final String url = urlPrefix +
-				"?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
+				"?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
 		final String user = "root";
 		final String pass = "pass";
 		try {
@@ -131,17 +130,17 @@ public class DBManager {
 		return lists;
 	}
 
-	public static LinkedHashMap<String, String> getWordsByListID(Long id) {
-		LinkedHashMap<String, String> words = new LinkedHashMap<String, String>();
-		final String query = "SELECT word_lang1, word_lang2 FROM vocabtrainer.words WHERE list_id = " + id + ";";
+	public static LinkedList<Word> getWordsByListID(Long lID) {
+		LinkedList<Word> words = new LinkedList<Word>();
+		final String query = "SELECT word_id, word_lang1, word_lang2 FROM vocabtrainer.words WHERE list_id = " + lID + ";";
 		try {
 			s = connection.createStatement();
 			ResultSet rs = s.executeQuery(query);
 			while(rs.next()) {
+				Long wID = (Long) rs.getObject("word_id");
 				String word1 = (String) rs.getObject("word_lang1");
 				String word2 = (String) rs.getObject("word_lang2");
-				System.out.println("word1: "+word1+", word2: "+word2);
-				words.put(word1, word2);
+				words.add(new Word(wID, lID, word1, word2));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

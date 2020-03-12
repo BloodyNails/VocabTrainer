@@ -9,6 +9,28 @@
 	<title>VocabTrainer - Detail View</title>
 </head>
 <body>
-	<h1>Detail View of</h1>
+	<h1>Detail View of ${list.description}</h1>
+	
+	<table>
+		<thead>
+			<tr>
+				<th>wordID</th>
+				<th>wordLang1</th>
+				<th>wordLang2</th>
+				<th>delete</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach var="word" items="${words}">
+	            <tr>
+	            	<td>${word.ID}</td>
+	            	<td>${word.wordLang1}</td>
+	            	<td>${word.wordLang2}</td>
+	            	<td>x</td>
+	            </tr>
+	        </c:forEach>
+		</tbody>
+    </table>
+    
 </body>
 </html>
