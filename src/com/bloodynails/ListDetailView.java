@@ -21,21 +21,28 @@ public class ListDetailView extends HttpServlet {
     public ListDetailView() {
         super();
     }
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(request.getParameter("listID") != null) {
 			Long listID = Long.parseLong(request.getParameter("listID"));
-			if(listID != null) {
+			System.out.println(listID);
+			if(listID != null && listID > -1) {
 				list = DBManager.getListByID(listID);
 				LinkedList<Word> words = list.getWords();
 				
 				request.setAttribute("words", words);
 				request.setAttribute("list", list);
-				request.getRequestDispatcher("/ListDetailView.jsp").forward(request, response);
 			}
 		}
+		
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
+		request.getRequestDispatcher("/ListDetailView.jsp").forward(request, response);
 	}
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		// DELETE WORD FROM LIST
 		if(request.getParameter("wordID") != null) {
 			Long wordID = Long.parseLong(request.getParameter("wordID"));
 			if(wordID != null && wordID > -1) {
@@ -43,17 +50,19 @@ public class ListDetailView extends HttpServlet {
 			}	
 		}
 		
-		if(list != null) {
-			String wordLang1 = (String) request.getParameter("wordLang1");
-			String wordLang2 = (String) request.getParameter("wordLang2");
-			
-			if(wordLang1 != null && wordLang2 != null)
-				if(!wordLang1.isEmpty() && !wordLang2.isEmpty())
-					list.addWord(new Word(list.getID(), wordLang1, wordLang2));
-		}
-			doGet(request, response);
+		// ADD WORD TO LIST
+			if(request.getParameter("wordLang1") != null && request.getParameter("wordLang2") != null) {
+				String wordLang1 = (String) request.getParameter("wordLang1");
+				String wordLang2 = (String) request.getParameter("wordLang2");
+				if(wordLang1 != null && wordLang2 != null)
+					if(!wordLang1.isEmpty() && !wordLang2.isEmpty())
+						if(list != null)
+							list.addWord(new Word(list.getID(), wordLang1, wordLang2));	
+			}
+		
+		doGet(request, response);
 	}
-	
+
 	public static VocabList getList() {
 		return list;
 	}

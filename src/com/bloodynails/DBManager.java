@@ -8,15 +8,15 @@ import java.sql.Statement;
 import java.util.LinkedList;
 
 public class DBManager {
-	
+
 	public static Connection connection = getConnection();
-	
+
 	private static Statement s;
 
-	public static Connection getConnection() {
+	private static Connection getConnection() {
 		final String urlPrefix = "jdbc:mysql://localhost:3306/vocabtrainer";
-		final String url = urlPrefix +
-				"?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+		final String url = urlPrefix
+				+ "?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
 		final String user = "root";
 		final String pass = "pass";
 		try {
@@ -33,40 +33,43 @@ public class DBManager {
 		}
 	}
 
-	protected static boolean save(DBObj dbObj) {
-		String query = "";
+	public static boolean save(DBObj dbObj) {
+		String query;
 
-		System.out.println("Saving: " + dbObj.getType());
+		if (dbObj != null) {
 
-		switch (dbObj.getType()) {
-			case LIST:
-				VocabList l = (VocabList) dbObj;
-				query = "INSERT INTO LISTS (list_id, description, lang1, lang2) " + "VALUES ('" + l.getID().toString()
-						+ "', '" + l.getDescription() + "', '" + l.getLang1() + "', '" + l.getLang2() + "')";
-				System.out.println(query + "\n");
-				try {
-					s = connection.createStatement();
-					return s.execute(query);
-				} catch (SQLException e) {
-					e.printStackTrace();
+			System.out.println("Saving: " + dbObj.getType());
+
+			switch (dbObj.getType()) {
+				case LIST:
+					VocabList l = (VocabList) dbObj;
+					query = "INSERT INTO LISTS (list_id, description, lang1, lang2) " + "VALUES ('"
+							+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1() + "', '"
+							+ l.getLang2() + "')";
+					try {
+						s = connection.createStatement();
+						return s.execute(query);
+					} catch (SQLException e) {
+						e.printStackTrace();
+						return false;
+					}
+				case WORD:
+					Word w = (Word) dbObj;
+					query = "INSERT INTO WORDS (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
+							+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
+							+ "', N'" + w.getWordLang2() + "')";
+					try {
+						s = connection.createStatement();
+						return s.execute(query);
+					} catch (SQLException e) {
+						e.printStackTrace();
+						return false;
+					}
+				default:
 					return false;
-				}
-			case WORD:
-				Word w = (Word) dbObj;
-				query = "INSERT INTO WORDS (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
-						+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1() + "', N'"
-						+ w.getWordLang2() + "')";
-				System.out.println(query + "\n");
-				try {
-					s = connection.createStatement();
-					return s.execute(query);
-				} catch (SQLException e) {
-					e.printStackTrace();
-					return false;
-				}
-			default:
-				query = "";
-				return false;
+			}
+		} else {
+			return false;
 		}
 	}
 
@@ -103,98 +106,107 @@ public class DBManager {
 		}
 		return id;
 	}
-	
+
 	public static LinkedList<VocabList> getAllLists() {
-		
+
 		LinkedList<VocabList> lists = new LinkedList<VocabList>();
-		
+
 		final String query = "SELECT * FROM lists;";
 		try {
 			s = connection.createStatement();
 			ResultSet rs = s.executeQuery(query);
-			while(rs.next()) {
+			while (rs.next()) {
 				Long id = (Long) rs.getObject("list_id");
 				String description = (String) rs.getObject("description");
 				String lang1 = (String) rs.getObject("lang1");
 				String lang2 = (String) rs.getObject("lang2");
 				lists.add(new VocabList(id, description, lang1, lang2));
-				
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 		return lists;
 	}
 
-	public static LinkedList<Word> getWordsByListID(Long lID) {
-		LinkedList<Word> words = new LinkedList<Word>();
-		final String query = "SELECT word_id, word_lang1, word_lang2 FROM vocabtrainer.words WHERE list_id = " + lID + ";";
-		try {
-			s = connection.createStatement();
-			ResultSet rs = s.executeQuery(query);
-			while(rs.next()) {
-				Long wID = (Long) rs.getObject("word_id");
-				String word1 = (String) rs.getObject("word_lang1");
-				String word2 = (String) rs.getObject("word_lang2");
-				words.add(new Word(wID, lID, word1, word2));
+	public static LinkedList<Word> getWordsByListID(Long listID) {
+		if (listID != null && listID > -1) {
+			LinkedList<Word> words = new LinkedList<Word>();
+			final String query = "SELECT word_id, word_lang1, word_lang2 FROM vocabtrainer.words WHERE list_id = "
+					+ listID + ";";
+			try {
+				s = connection.createStatement();
+				ResultSet rs = s.executeQuery(query);
+				while (rs.next()) {
+					Long wID = (Long) rs.getObject("word_id");
+					String word1 = (String) rs.getObject("word_lang1");
+					String word2 = (String) rs.getObject("word_lang2");
+					words.add(new Word(wID, listID, word1, word2));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}		
-		return words;
-	}
-
-	public static VocabList getListByID(Long id) {
-		VocabList list = null;
-		final String query = "SELECT * FROM lists WHERE list_id = "+id+";";
-		
-		try {
-			s = connection.createStatement();
-			ResultSet rs = s.executeQuery(query);
-			while(rs.next()) {
-				String description = (String) rs.getObject("description");
-				String lang1 = (String) rs.getObject("lang1");
-				String lang2 = (String) rs.getObject("lang2");
-				list = new VocabList(id, description, lang1, lang2);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
+			return words;
+		} else {
 			return null;
 		}
-		return list;
+
 	}
-	
-	public static boolean deleteWordByID(Long id) {
-		final String query = "DELETE FROM words WHERE word_id = " + id;
+
+	public static VocabList getListByID(Long listID) {
+		if (listID != null && listID > -1) {
+			VocabList list = new VocabList();
+			final String query = "SELECT * FROM lists WHERE list_id = " + listID + ";";
+			try {
+				s = connection.createStatement();
+				ResultSet rs = s.executeQuery(query);
+				while (rs.next()) {
+					String description = (String) rs.getObject("description");
+					String lang1 = (String) rs.getObject("lang1");
+					String lang2 = (String) rs.getObject("lang2");
+					list = new VocabList(listID, description, lang1, lang2);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
+			}
+			return list;
+		} else {
+			return null;
+		}
+
+	}
+
+	public static boolean deleteWordByID(Long wordID) {
+		final String query = "DELETE FROM words WHERE word_id = " + wordID;
 		try {
 			s = connection.createStatement();
-			System.out.println("deleting word: #"+id);
+			System.out.println("deleting word: #" + wordID);
 			return s.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
-	public static boolean deleteListByID(Long id) {
-		final String query = "DELETE FROM lists WHERE list_id = " + id;
-		final VocabList list = getListByID(id);
-		
-		if(list != null) {
+
+	public static boolean deleteListByID(Long listID) {
+		final String query = "DELETE FROM lists WHERE list_id = " + listID;
+		final VocabList list = getListByID(listID);
+
+		if (list != null) {
 			LinkedList<Word> words = list.getWords();
-			if(words != null) {
-				if(words.size() > 0) {
-					for(int i = 0; i < words.size(); i++) {
+			if (words != null) {
+				if (words.size() > 0) {
+					for (int i = 0; i < words.size(); i++) {
 						deleteWordByID(words.get(i).getID());
 					}
 				}
 			}
 		}
-		
+
 		try {
 			s = connection.createStatement();
 			System.out.println("deleting list: #" + list.getID() + ", " + list.getDescription());

@@ -21,21 +21,23 @@ public class Lists extends HttpServlet {
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		LinkedList<VocabList> lists = DBManager.getAllLists();
-		int listCount = lists.size();
-		
-		request.setAttribute("listCount", listCount);		
-		request.setAttribute("lists", lists);
+		if(DBManager.getAllLists() != null) {
+			LinkedList<VocabList> lists = DBManager.getAllLists();
+			if(lists != null) {
+				int listCount = lists.size();
+				request.setAttribute("listCount", listCount);		
+				request.setAttribute("lists", lists);
+			}
+		}
 		
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
-		request.getRequestDispatcher("/Lists.jsp").forward(request, response);
+		request.getRequestDispatcher("/Lists.jsp").forward(request, response);	
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// DELETE LIST
 		
+		// DELETE LIST
 		if(request.getParameter("listID") != null) {
 			Long listID = Long.parseLong(request.getParameter("listID"));
 			if(listID != null && listID > -1) {
@@ -43,6 +45,7 @@ public class Lists extends HttpServlet {
 			}
 		}
 		
+		// ADD NEW LIST
 		if(request.getParameter("description") != null && request.getParameter("lang1") != null && request.getParameter("lang2") != null) {
 			String description = (String) request.getParameter("description");
 			String lang1 = (String) request.getParameter("lang1");

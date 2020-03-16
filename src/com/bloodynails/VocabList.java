@@ -3,15 +3,22 @@ package com.bloodynails;
 import java.util.LinkedList;
 
 public class VocabList extends DBObj{
-	private Long ID;
 	private String description;
 	private String lang1;
 	private String lang2;
 	private LinkedList<Word> words;
 	
+	public VocabList() {
+		// only needed when a VocabList must be initialized!
+		super(-1L, DBObjType.LIST);
+		this.description = "";
+		this.lang1 = "";
+		this.lang2 = "";
+		words = new LinkedList<Word>();
+	}
+	
 	public VocabList (String description, String lang1, String lang2) {
 		super(DBManager.getNextListID(), DBObjType.LIST);
-		this.ID = DBManager.getNextListID();
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;
@@ -21,12 +28,15 @@ public class VocabList extends DBObj{
 	
 	public VocabList(Long listID, String description, String lang1, String lang2) {
 		super(listID, DBObjType.LIST);
-		this.ID = listID;
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;
 		words = new LinkedList<Word>();
 		fillWordsFromDB();
+	}
+	
+	public Long getID() {
+		return super.getID();
 	}
 	
 	public String getDescription() {
@@ -60,7 +70,7 @@ public class VocabList extends DBObj{
 	
 	public void fillWordsFromDB() {
 		System.out.println("filling list:" + this.getDescription());
-		LinkedList<Word> words = DBManager.getWordsByListID(this.ID);
+		LinkedList<Word> words = DBManager.getWordsByListID(super.getID());
 		if(words != null) {
 			if(words.size() > 0) {
 				this.words = words;
