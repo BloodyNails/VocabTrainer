@@ -46,8 +46,7 @@ public class DBManager {
 				System.out.println(query + "\n");
 				try {
 					s = connection.createStatement();
-					s.execute(query);
-					return true;
+					return s.execute(query);
 				} catch (SQLException e) {
 					e.printStackTrace();
 					return false;
@@ -60,8 +59,7 @@ public class DBManager {
 				System.out.println(query + "\n");
 				try {
 					s = connection.createStatement();
-					s.execute(query);
-					return true;
+					return s.execute(query);
 				} catch (SQLException e) {
 					e.printStackTrace();
 					return false;
@@ -168,5 +166,42 @@ public class DBManager {
 			return null;
 		}
 		return list;
+	}
+	
+	public static boolean deleteWordByID(Long id) {
+		final String query = "DELETE FROM words WHERE word_id = " + id;
+		try {
+			s = connection.createStatement();
+			System.out.println("deleting word: #"+id);
+			return s.execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean deleteListByID(Long id) {
+		final String query = "DELETE FROM lists WHERE list_id = " + id;
+		final VocabList list = getListByID(id);
+		
+		if(list != null) {
+			LinkedList<Word> words = list.getWords();
+			if(words != null) {
+				if(words.size() > 0) {
+					for(int i = 0; i < words.size(); i++) {
+						deleteWordByID(words.get(i).getID());
+					}
+				}
+			}
+		}
+		
+		try {
+			s = connection.createStatement();
+			System.out.println("deleting list: #" + list.getID() + ", " + list.getDescription());
+			return s.execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

@@ -9,8 +9,14 @@
 	<title>VocabTrainer - Lists</title>
 </head>
 <body>
+	<h1>VocabTrainer - Lists</h1>
 	<h3>List count: ${listCount}</h3>
-	<h3>Turm - ба́шня</h3>
+	
+	<form action="/VocabTrainer" method="GET">
+		<label>BACK: </label><input type="submit" value="BACK">
+	</form>
+	
+	<br>
 	
 	<table>
 		<thead>
@@ -30,13 +36,27 @@
 	            	<td>${list.lang2}</td>
 	            	<td>
 	            		<form action="Lists/View" method="GET">
-	            			<input type="hidden" value="${list.ID}" name="id">
-	            			<input type="submit" value="submit">
+	            			<input type="hidden" value="${list.ID}" name="listID">
+	            			<input type="submit" value="details">
+	            		</form>
+	            	</td>
+	            	<td>
+	            		<form action="" method="POST">
+	            			<input type="hidden" value="${list.ID}" name="listID">
+	            			<input type="submit" value="delete">
 	            		</form>
 	            	</td>
 	            </tr>
 	        </c:forEach>
 		</tbody>
     </table>
+    
+    <form action="" method="POST">
+    	<label>description: </label><input type="text" value="" name="description"><br>
+    	<label>first language: </label><input type="text" value="" name="lang1"><br>
+    	<label>second language: </label><input type="text" value="" name="lang2"><br>
+    	<label>submit</label><input type="submit" value="SUBMIT">
+    </form>
+    
 </body>
 </html>

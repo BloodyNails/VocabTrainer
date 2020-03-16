@@ -22,15 +22,19 @@ public class Word extends DBObj{
 		this.wordLang2 = wordLang2;
 	}
 	
+	public Long getID() {
+		return this.ID;
+	}
+	
 	public Long getListID() {
 		return this.listID;
 	}
 	
 	public String getWordLang1() {
-		return wordLang1;
+		return this.wordLang1;
 	}
 	
 	public String getWordLang2() {
-		return wordLang2;
+		return this.wordLang2;
 	}
 }

@@ -11,12 +11,18 @@
 <body>
 	<h1>Detail View of ${list.description}</h1>
 	
+	<form action="/VocabTrainer/Lists" method="GET">
+		<label>BACK: </label><input type="submit" value="BACK">
+	</form>
+	
+	<br>
+	
 	<table>
 		<thead>
 			<tr>
-				<th>wordID</th>
-				<th>wordLang1</th>
-				<th>wordLang2</th>
+				<th>ID</th>
+				<th>${list.lang1}</th>
+				<th>${list.lang2}</th>
 				<th>delete</th>
 			</tr>
 		</thead>
@@ -26,20 +32,25 @@
 	            	<td>${word.ID}</td>
 	            	<td>${word.wordLang1}</td>
 	            	<td>${word.wordLang2}</td>
-	            	<td>x</td>
+	            	<td>
+	            		<form action="" method="POST">
+	            			<input type="hidden" value="${word.ID}" name="wordID">
+	            			<input type="submit" value="delete">
+	            		</form>
+					</td>
 	            </tr>
 	        </c:forEach>
 		</tbody>
     </table>
     
    	<form action="" method="POST">
-   		<label>wordLang1:</label>
+   		<label>input ${list.lang1}:</label>
 		<input type="text" value="" name="wordLang1">
 		<br>
-		<label>wordLang2:</label>
+		<label>input ${list.lang2}:</label>
 		<input type="text" value="" name="wordLang2">
 		<br>
-		<input type="submit" value="submit">
+		<input type="submit" value="add">
 	</form>
 </body>
 </html>

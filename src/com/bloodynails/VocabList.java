@@ -15,6 +15,7 @@ public class VocabList extends DBObj{
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;
+		words = new LinkedList<Word>();
 		fillWordsFromDB();
 	}
 	
@@ -24,6 +25,7 @@ public class VocabList extends DBObj{
 		this.description = description;
 		this.lang1 = lang1;
 		this.lang2 = lang2;
+		words = new LinkedList<Word>();
 		fillWordsFromDB();
 	}
 	
@@ -39,31 +41,30 @@ public class VocabList extends DBObj{
 		return lang2;
 	}
 	
-	// redundant for now
 	public boolean addWord(Word word) {
 		if (word == null) 
 			return false;
-		else {
+		else if (words != null) {
 			words.add(word);
 			DBManager.save(word);
 			return true;
 		}
+		else {
+			return false;
+		}
 	}
 	
-	// redundant as addWord has no use 
 	public LinkedList<Word> getWords() {
 		return words;
 	}
 	
-	public boolean fillWordsFromDB() {
+	public void fillWordsFromDB() {
+		System.out.println("filling list:" + this.getDescription());
 		LinkedList<Word> words = DBManager.getWordsByListID(this.ID);
-		if(words.isEmpty() || words == null) {
-			words = new LinkedList<Word>();
-			return false;
-		}
-		else {
-			this.words = words;
-			return true;	
+		if(words != null) {
+			if(words.size() > 0) {
+				this.words = words;
+			}
 		}
 	}
 
