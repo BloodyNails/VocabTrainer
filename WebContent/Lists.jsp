@@ -13,7 +13,7 @@
 	<h3>List count: ${listCount}</h3>
 	
 	<form action="/VocabTrainer" method="GET">
-		<label>BACK: </label><input type="submit" value="BACK">
+		<input class="reg-btn" type="submit" value="BACK">
 	</form>
 	
 	<br>
@@ -21,29 +21,31 @@
 	<table>
 		<thead>
 			<tr>
-				<th>ID</th>
+				<th class="small-col">ID</th>
 				<th>description</th>
 				<th>first language</th>
 				<th>second language</th>
+				<th class="small-col">details</th>
+				<th class="small-col">delete</th>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="list" items="${lists}">
-	            <tr>
+			<c:forEach var="list" items="${lists}" varStatus="loop">
+	            <tr class="${loop.index % 2 == 0 ? 'even' : 'odd'}">
 	            	<td>${list.ID}</td>
 	            	<td>${list.description}</td>
 	            	<td>${list.lang1}</td>
 	            	<td>${list.lang2}</td>
 	            	<td>
-	            		<form action="Lists/View" method="GET">
+	            		<form class="form" action="Lists/View" method="GET">
 	            			<input type="hidden" value="${list.ID}" name="listID">
-	            			<input type="submit" value="details">
+	            			<input class="table-btn" type="submit" value="details">
 	            		</form>
 	            	</td>
 	            	<td>
-	            		<form action="" method="POST">
+	            		<form class="form" action="" method="POST">
 	            			<input type="hidden" value="${list.ID}" name="listID">
-	            			<input type="submit" value="delete">
+	            			<input class="table-btn, delete-input" type="submit" value="delete">
 	            		</form>
 	            	</td>
 	            </tr>
@@ -51,12 +53,16 @@
 		</tbody>
     </table>
     
-    <form action="" method="POST">
-    	<label>description: </label><input type="text" value="" name="description"><br>
-    	<label>first language: </label><input type="text" value="" name="lang1"><br>
-    	<label>second language: </label><input type="text" value="" name="lang2"><br>
-    	<label>submit</label><input type="submit" value="SUBMIT">
-    </form>
+    <br>
+    <div class="input-div">
+	    <form action="" method="POST">
+	    	<label>description: </label><input type="text" value="" name="description"><br>
+	    	<label>first language: </label><input type="text" value="" name="lang1"><br>
+	    	<label>second language: </label><input type="text" value="" name="lang2"><br>
+	    	<input class="form-btn" type="submit" value="SUBMIT">
+	    </form>
+    </div>
+    
     
 </body>
 </html>

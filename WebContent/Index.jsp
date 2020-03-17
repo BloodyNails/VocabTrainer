@@ -10,7 +10,7 @@
 </head>
 <body>
 	<form action="Lists" method="GET">
-		<label>Lists:</label><input type="submit" value="LISTS">
+		<input class="reg-btn" type="submit" value="LISTS">
 	</form>
 </body>
 </html>

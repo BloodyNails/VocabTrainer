@@ -3,6 +3,66 @@
 }
 
 body {
-	background-color: dimgrey;
+	background: rgb(74,0,64);
+	background: linear-gradient(90deg, rgba(74,0,64,1) 0%, rgba(94,0,0,1) 100%);
 	color: white;
+}
+
+table {
+	width: 100%;
+	border: none;
+	background-color: rgb(134, 0, 87);
+}
+
+table th {
+	text-align: left;
+}
+
+table td, table th {
+	text-align: left;
+	background-color: rgba(55, 0, 53, 0.2);
+}
+
+.input-div {
+	width: 100%;
+}
+
+.table-btn {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+.small-col {
+	width: 30px;
+}
+
+.form, .delete-input {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+.delete-input {
+	background-color: red;
+	color: black;
+	font-weight: bold;	
+}
+
+.reg-btn {
+	width: 150px;
+	height: 30px;
+	font-size: 20px;
+}
+
+.form-btn {
+	
+}
+
+.even {
+	background-color: rgba(55, 0, 53, 0.3);
+}
+
+.odd {
+	background-color: rgba(100, 33, 103, 0.3);
 }

@@ -12,7 +12,7 @@
 	<h1>Detail View of ${list.description}</h1>
 	
 	<form action="/VocabTrainer/Lists" method="GET">
-		<label>BACK: </label><input type="submit" value="BACK">
+		<input class="reg-btn" type="submit" value="BACK">
 	</form>
 	
 	<br>
@@ -20,22 +20,22 @@
 	<table>
 		<thead>
 			<tr>
-				<th>ID</th>
+				<th class="small-col">ID</th>
 				<th>${list.lang1}</th>
 				<th>${list.lang2}</th>
-				<th>delete</th>
+				<th class="small-col">delete</th>
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="word" items="${words}">
-	            <tr>
+			<c:forEach var="word" items="${words}" varStatus="loop">
+	            <tr class="${loop.index % 2 == 0 ? 'even' : 'odd'}">
 	            	<td>${word.ID}</td>
 	            	<td>${word.wordLang1}</td>
 	            	<td>${word.wordLang2}</td>
 	            	<td>
-	            		<form action="" method="POST">
+	            		<form class="form" action="" method="POST">
 	            			<input type="hidden" value="${word.ID}" name="wordID">
-	            			<input type="submit" value="delete">
+	            			<input class="table-btn, delete-input" type="submit" value="delete">
 	            		</form>
 					</td>
 	            </tr>
@@ -43,14 +43,19 @@
 		</tbody>
     </table>
     
-   	<form action="" method="POST">
-   		<label>input ${list.lang1}:</label>
-		<input type="text" value="" name="wordLang1">
-		<br>
-		<label>input ${list.lang2}:</label>
-		<input type="text" value="" name="wordLang2">
-		<br>
-		<input type="submit" value="add">
-	</form>
+    <br>
+    
+    <div class="input-div">
+    	<form action="" method="POST">
+	   		<label>input ${list.lang1}:</label>
+			<input type="text" value="" name="wordLang1">
+			<br>
+			<label>input ${list.lang2}:</label>
+			<input type="text" value="" name="wordLang2">
+			<br>
+			<input class="form-btn" type="submit" value="add">
+		</form>
+    </div>
+   	
 </body>
 </html>

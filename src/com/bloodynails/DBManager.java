@@ -198,11 +198,9 @@ public class DBManager {
 
 		if (list != null) {
 			LinkedList<Word> words = list.getWords();
-			if (words != null) {
-				if (words.size() > 0) {
+			if (words != null && words.size() > 0) {
 					for (int i = 0; i < words.size(); i++) {
 						deleteWordByID(words.get(i).getID());
-					}
 				}
 			}
 		}
