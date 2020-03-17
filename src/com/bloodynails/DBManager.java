@@ -37,37 +37,33 @@ public class DBManager {
 		String query;
 
 		if (dbObj != null) {
-
-			System.out.println("Saving: " + dbObj.getType());
-
 			switch (dbObj.getType()) {
 				case LIST:
 					VocabList l = (VocabList) dbObj;
+					System.out.println("Saving: " + l.getType()+ ": " + l.getDescription());
 					query = "INSERT INTO LISTS (list_id, description, lang1, lang2) " + "VALUES ('"
 							+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1() + "', '"
 							+ l.getLang2() + "')";
-					try {
-						s = connection.createStatement();
-						return s.execute(query);
-					} catch (SQLException e) {
-						e.printStackTrace();
-						return false;
-					}
+					break;
 				case WORD:
 					Word w = (Word) dbObj;
+					System.out.println("Saving: " + w.getType()+ ": " + w.getWordLang1() + ", " + w.getWordLang2());
 					query = "INSERT INTO WORDS (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
 							+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
 							+ "', N'" + w.getWordLang2() + "')";
-					try {
-						s = connection.createStatement();
-						return s.execute(query);
-					} catch (SQLException e) {
-						e.printStackTrace();
-						return false;
-					}
+					break;
 				default:
-					return false;
+					query = "";
+					break;
 			}
+			try {
+				s = connection.createStatement();
+				return s.execute(query);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+
 		} else {
 			return false;
 		}
@@ -80,8 +76,8 @@ public class DBManager {
 		try {
 			s = connection.createStatement();
 			ResultSet rs = s.executeQuery(query);
-			while (rs.next()) {
-				tmp_id = (Long) rs.getObject("word_id");
+			if(rs.last()) {
+				tmp_id = (Long) rs.getLong("word_id");
 			}
 			id = tmp_id + 1;
 		} catch (SQLException e) {
@@ -97,8 +93,8 @@ public class DBManager {
 		try {
 			s = connection.createStatement();
 			ResultSet rs = s.executeQuery(query);
-			while (rs.next()) {
-				tmp_id = (Long) rs.getObject("list_id");
+			if(rs.last()) {
+				tmp_id = (Long) rs.getLong("list_id");
 			}
 			id = tmp_id + 1;
 		} catch (SQLException e) {
@@ -116,10 +112,10 @@ public class DBManager {
 			s = connection.createStatement();
 			ResultSet rs = s.executeQuery(query);
 			while (rs.next()) {
-				Long id = (Long) rs.getObject("list_id");
-				String description = (String) rs.getObject("description");
-				String lang1 = (String) rs.getObject("lang1");
-				String lang2 = (String) rs.getObject("lang2");
+				Long id = (Long) rs.getLong("list_id");
+				String description = (String) rs.getString("description");
+				String lang1 = (String) rs.getString("lang1");
+				String lang2 = (String) rs.getString("lang2");
 				lists.add(new VocabList(id, description, lang1, lang2));
 
 			}
@@ -140,9 +136,9 @@ public class DBManager {
 				s = connection.createStatement();
 				ResultSet rs = s.executeQuery(query);
 				while (rs.next()) {
-					Long wID = (Long) rs.getObject("word_id");
-					String word1 = (String) rs.getObject("word_lang1");
-					String word2 = (String) rs.getObject("word_lang2");
+					Long wID = (Long) rs.getLong("word_id");
+					String word1 = (String) rs.getString("word_lang1");
+					String word2 = (String) rs.getString("word_lang2");
 					words.add(new Word(wID, listID, word1, word2));
 				}
 			} catch (SQLException e) {
@@ -163,10 +159,10 @@ public class DBManager {
 			try {
 				s = connection.createStatement();
 				ResultSet rs = s.executeQuery(query);
-				while (rs.next()) {
-					String description = (String) rs.getObject("description");
-					String lang1 = (String) rs.getObject("lang1");
-					String lang2 = (String) rs.getObject("lang2");
+				if(rs.last()) {
+					String description = (String) rs.getString("description");
+					String lang1 = (String) rs.getString("lang1");
+					String lang2 = (String) rs.getString("lang2");
 					list = new VocabList(listID, description, lang1, lang2);
 				}
 			} catch (SQLException e) {
@@ -184,7 +180,7 @@ public class DBManager {
 		final String query = "DELETE FROM words WHERE word_id = " + wordID;
 		try {
 			s = connection.createStatement();
-			System.out.println("deleting word: #" + wordID);
+			System.out.println("Deleting: WORD: #" + wordID);
 			return s.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -199,15 +195,15 @@ public class DBManager {
 		if (list != null) {
 			LinkedList<Word> words = list.getWords();
 			if (words != null && words.size() > 0) {
-					for (int i = 0; i < words.size(); i++) {
-						deleteWordByID(words.get(i).getID());
+				for (int i = 0; i < words.size(); i++) {
+					deleteWordByID(words.get(i).getID());
 				}
 			}
 		}
 
 		try {
 			s = connection.createStatement();
-			System.out.println("deleting list: #" + list.getID() + ", " + list.getDescription());
+			System.out.println("Deleting LIST: #" + list.getID() + ", " + list.getDescription());
 			return s.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();

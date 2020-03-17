@@ -29,6 +29,7 @@ public class ListDetailView extends HttpServlet {
 				list = DBManager.getListByID(listID);
 				LinkedList<Word> words = list.getWords();
 				
+				request.setAttribute("wordCount", words.size());
 				request.setAttribute("words", words);
 				request.setAttribute("list", list);
 			}

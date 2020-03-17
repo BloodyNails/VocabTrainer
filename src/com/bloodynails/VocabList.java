@@ -35,10 +35,6 @@ public class VocabList extends DBObj{
 		fillWordsFromDB();
 	}
 	
-	public Long getID() {
-		return super.getID();
-	}
-	
 	public String getDescription() {
 		return description;
 	}
@@ -52,12 +48,9 @@ public class VocabList extends DBObj{
 	}
 	
 	public boolean addWord(Word word) {
-		if (word == null) 
-			return false;
-		else if (words != null) {
+		if (word != null && words != null) {
 			words.add(word);
-			DBManager.save(word);
-			return true;
+			return DBManager.save(word); 
 		}
 		else {
 			return false;

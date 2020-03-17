@@ -19,10 +19,6 @@ public class Word extends DBObj{
 		this.wordLang2 = wordLang2;
 	}
 	
-	public Long getID() {
-		return super.getID();
-	}
-	
 	public Long getListID() {
 		return this.listID;
 	}

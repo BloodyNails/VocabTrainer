@@ -10,6 +10,7 @@
 </head>
 <body>
 	<h1>Detail View of ${list.description}</h1>
+	<h3>Word count: ${wordCount}</h3>
 	
 	<form action="/VocabTrainer/Lists" method="GET">
 		<input class="reg-btn" type="submit" value="BACK">
@@ -48,7 +49,7 @@
     <div class="input-div">
     	<form action="" method="POST">
 	   		<label>input ${list.lang1}:</label>
-			<input type="text" value="" name="wordLang1">
+			<input type="text" value="" name="wordLang1" autofocus="autofocus">
 			<br>
 			<label>input ${list.lang2}:</label>
 			<input type="text" value="" name="wordLang2">
