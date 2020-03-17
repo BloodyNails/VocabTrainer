@@ -7,7 +7,6 @@ public class Word extends DBObj{
 	
 	public Word(Long listID, String wordLang1, String wordLang2) {
 		super(DBManager.getNextWordID(), DBObjType.WORD);
-		System.out.println(listID+", "+wordLang1+", "+wordLang2);
 		this.listID = listID;
 		this.wordLang1 = wordLang1;
 		this.wordLang2 = wordLang2;

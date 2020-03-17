@@ -69,7 +69,6 @@ public class VocabList extends DBObj{
 	}
 	
 	public void fillWordsFromDB() {
-		System.out.println("filling list:" + this.getDescription());
 		LinkedList<Word> words = DBManager.getWordsByListID(super.getID());
 		if(words != null) {
 			if(words.size() > 0) {

@@ -5,7 +5,6 @@ public class DBObj {
 	private DBObjType type;
 
 	public DBObj(Long ID, DBObjType type) {
-		//System.out.println(ID + ", "+type);
 		this.ID = ID;
 		this.type = type;
 	}

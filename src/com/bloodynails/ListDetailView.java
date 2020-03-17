@@ -25,7 +25,6 @@ public class ListDetailView extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(request.getParameter("listID") != null) {
 			Long listID = Long.parseLong(request.getParameter("listID"));
-			System.out.println(listID);
 			if(listID != null && listID > -1) {
 				list = DBManager.getListByID(listID);
 				LinkedList<Word> words = list.getWords();
