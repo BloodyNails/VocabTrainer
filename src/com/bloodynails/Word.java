@@ -1,5 +1,9 @@
 package com.bloodynails;
 
+import com.bloodynails.database.DBManager;
+import com.bloodynails.database.DBObj;
+import com.bloodynails.database.DBObjType;
+
 public class Word extends DBObj{
 	private Long listID;
 	private String wordLang1;

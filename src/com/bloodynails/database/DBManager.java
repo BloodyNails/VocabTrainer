@@ -1,4 +1,4 @@
-package com.bloodynails;
+package com.bloodynails.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
+
+import com.bloodynails.VocabList;
+import com.bloodynails.Word;
 
 public class DBManager {
 

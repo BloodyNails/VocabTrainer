@@ -1,4 +1,4 @@
-package com.bloodynails;
+package com.bloodynails.database;
 
 public class DBObj {
 	private Long ID;

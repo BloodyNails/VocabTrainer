@@ -1,4 +1,4 @@
-package com.bloodynails;
+package com.bloodynails.servlets;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -8,6 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.bloodynails.VocabList;
+import com.bloodynails.database.DBManager;
 
 /**
  * Servlet implementation class Lists

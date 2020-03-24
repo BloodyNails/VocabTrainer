@@ -2,6 +2,10 @@ package com.bloodynails;
 
 import java.util.LinkedList;
 
+import com.bloodynails.database.DBManager;
+import com.bloodynails.database.DBObj;
+import com.bloodynails.database.DBObjType;
+
 public class VocabList extends DBObj{
 	private String description;
 	private String lang1;
