@@ -6,7 +6,25 @@ TODO:
 	
 	- VocabTrainer/Training:
 		- /Vocabulary:
-			- (select specific list || select all lists) -> choose language to be prompted
+			Sequence:
+				0: check if interrupted round:
+						yes: get last_cycle_id from round, check if cycle interrupted: 
+							yes: get curr_word_id from cycle, load word and continue with (5), start timer again
+							no: start new cycle
+						no: start a new round go to (1)
+				1: (select specific list || select all lists) -> choose language to be prompted
+				2: all words from selected lists read from "words" and written to "vocab_words" with: prompted = false
+				3: create cycle (false_count = 0, true_count = 0), add cycle_id to cycle_ids in "rounds", count words in "vocab_words" and set cycle->word_count to counted value, set prompted to false for all words in "vocab_words", start timer
+				4: create prompt: get all "prompted == false" words from "vocab_words", 
+					if amount == 0: stop timer, end cycle
+						check false_count: 
+							if fc == 0: end round (6)
+							if fc > 0: start new cycle (3)
+					if amount > 0: get random word from "prompted == false" words
+				5: input false: false_count+1 (code and db), mark word as prompted in "vocab_words", go to (4)
+					input true: true_count+1 (code and db), delete word in "vocab_words", go to (4)
+				6: round finished: get all stats from cycles, ...
+			
 			- make every round cycle based: first cycle all words, second cycle the words you didn't know at first, and so on... until you entered every word correct
 			- layout:
 				- timer which increases whilst the round proceeds
@@ -29,22 +47,48 @@ Database Stuff:
 			lang1, 
 			lang2
 		)
+		
 		words (
 			word_id PRIMARY KEY, 
 			list_id FOREIGN KEY, 
 			word_lang1, 
 			word_lang2
 		)
-		round_stats (
-			round_id PRIMARY KEY, 
-			word_count, 
-			list_ids (array of all list ID's the words came from) 
-			cycle_count, 
-			time, 
+		
+		cycle (
+			cycle_id PRIMARY KEY,
+			round_id FOREIGN KEY,
+			completed (true || false)
+			word_count,
+			curr_word_id, 
 			true_count,
 			false_count,
-			true_false_ratio (0 <= x <= 1) determines whether you had trouble or not
+			tf_ratio : r = false_count / true_count,
+			time
 		)
+		
+		// all words from selected lists will be pasted here
+		vocab_words ( 
+			word_id,
+			word_lang1,
+			word_lang2,
+			prompted (true || false)
+		)
+		
+		round (
+			round_id PRIMARY KEY,
+			completed (true || false),
+			list_ids (array of all list ID's the words came from),
+			lang1,
+			lang2,
+			prompted_lang,
+			cycle_ids (array of ID's from all cycles),
+			time (sum of all cycle time), 
+			true_count,
+			false_count,
+			tf_ratio : avg. ratio of all cycles 
+		)
+		
 		total_stats (
 			round_count,
 			word_count,
@@ -52,9 +96,11 @@ Database Stuff:
 			total_time,
 			true_count,
 			false_count,
-			true_false_ratio,
+			true_false_ratios (array with ratios of all cycles),
+			total_true_false_ratio (avg. overall ratio)
 			worst_list (the list you should learn the most, because you had lots of false inputs)
 		)
+		
 		
 	W/OUT AUTO_INCREMENT:
 			
