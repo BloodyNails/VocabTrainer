@@ -9,7 +9,7 @@
 	<title>VocabTrainer - Detail View</title>
 </head>
 <body>
-	<h1>Detail View of ${list.description}</h1>
+	<h1>VocabTrainer -> Lists -> ${list.description}</h1>
 	<h3>Word count: ${wordCount}</h3>
 	
 	<form action="/VocabTrainer/Lists" method="GET">

@@ -9,7 +9,7 @@
 	<title>VocabTrainer - Lists</title>
 </head>
 <body>
-	<h1>VocabTrainer - Lists</h1>
+	<h1>VocabTrainer -> Lists</h1>
 	<h3>List count: ${listCount}</h3>
 	
 	<form action="/VocabTrainer" method="GET">

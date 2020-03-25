@@ -1,0 +1,75 @@
+TODO:
+	- implement warning warning when removing list
+	- remove questionmark in url after forwarding request, might cause errors later
+	- vocabulary
+	- create stats table
+	
+	- VocabTrainer/Training:
+		- /Vocabulary:
+			- (select specific list || select all lists) -> choose language to be prompted
+			- make every round cycle based: first cycle all words, second cycle the words you didn't know at first, and so on... until you entered every word correct
+			- layout:
+				- timer which increases whilst the round proceeds
+				- label: question (get a random word from the amount of words which has been selected before, which has not been questioned yet)
+				- input: answer (translate the word from label to your selected language)
+				- button: submit (send answer to servlet and check for errors)
+			- stats: 
+				correctness (therefore also: total number of false/true inputs), 
+				time -> therefore add timer and display it on every round
+				total number of cycles, 
+				avg. cycles per round
+	
+Database Stuff:
+
+	Tables:
+	
+		lists (
+			list_id PRIMARY KEY, 
+			description, 
+			lang1, 
+			lang2
+		)
+		words (
+			word_id PRIMARY KEY, 
+			list_id FOREIGN KEY, 
+			word_lang1, 
+			word_lang2
+		)
+		round_stats (
+			round_id PRIMARY KEY, 
+			word_count, 
+			list_ids (array of all list ID's the words came from) 
+			cycle_count, 
+			time, 
+			true_count,
+			false_count,
+			true_false_ratio (0 <= x <= 1) determines whether you had trouble or not
+		)
+		total_stats (
+			round_count,
+			word_count,
+			cycle_count,
+			total_time,
+			true_count,
+			false_count,
+			true_false_ratio,
+			worst_list (the list you should learn the most, because you had lots of false inputs)
+		)
+		
+	W/OUT AUTO_INCREMENT:
+			
+		CREATE TABLE lists(
+			list_id INT UNSIGNED NOT NULL PRIMARY KEY,
+			description VARCHAR(180),
+			lang1 VARCHAR(60) NOT NULL,
+			lang2 VARCHAR(60) NOT NULL
+			);
+			
+		CREATE TABLE words(
+			word_id INT UNSIGNED NOT NULL,
+			list_id INT UNSIGNED NOT NULL,
+			word_lang1 VARCHAR(100) NOT NULL,
+			word_lang2 VARCHAR(100) NOT NULL,
+			PRIMARY KEY (word_id),
+			FOREIGN KEY (list_id) REFERENCES lists(list_id)
+			);	

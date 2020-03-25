@@ -9,15 +9,11 @@
 	<title>VocabTrainer - Training</title>
 </head>
 <body>
-	<h1>VocabTrainer -> Training</h1>
+	<h1>VocabTrainer -> Training -> Vocabulary</h1>
 	
-	<form action="/VocabTrainer" method="GET">
+	<form action="/VocabTrainer/Training" method="GET">
 		<input class="reg-btn" type="submit" value="BACK">
 	</form>
 	
-	<br>
-	<form action="Training/Vocabulary" class="form" method="GET">
-		<input class="table-btn" type="submit" value="Vocabulary">
-	</form>
 </body>
 </html>
