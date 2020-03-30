@@ -8,34 +8,30 @@ import com.bloodynails.database.DBObjType;
 
 public class VocabList extends DBObj{
 	private String description;
-	private String lang1;
-	private String lang2;
-	private LinkedList<Word> words;
+	private VocabPair languages;
+	private LinkedList<VocabWord> words;
 	
 	public VocabList() {
 		// only needed when a VocabList must be initialized!
 		super(-1L, DBObjType.LIST);
 		this.description = "";
-		this.lang1 = "";
-		this.lang2 = "";
-		words = new LinkedList<Word>();
+		this.languages = new VocabPair();
+		words = new LinkedList<VocabWord>();
 	}
 	
-	public VocabList (String description, String lang1, String lang2) {
+	public VocabList (String description, VocabPair languages) {
 		super(DBManager.getNextListID(), DBObjType.LIST);
 		this.description = description;
-		this.lang1 = lang1;
-		this.lang2 = lang2;
-		words = new LinkedList<Word>();
+		this.languages = languages;
+		words = new LinkedList<VocabWord>();
 		fillWordsFromDB();
 	}
 	
-	public VocabList(Long listID, String description, String lang1, String lang2) {
+	public VocabList(Long listID, String description, VocabPair languages) {
 		super(listID, DBObjType.LIST);
 		this.description = description;
-		this.lang1 = lang1;
-		this.lang2 = lang2;
-		words = new LinkedList<Word>();
+		this.languages = languages;
+		words = new LinkedList<VocabWord>();
 		fillWordsFromDB();
 	}
 	
@@ -43,15 +39,15 @@ public class VocabList extends DBObj{
 		return description;
 	}
 	
-	public String getLang1() {
-		return lang1;
+	public VocabLang getLang1() {
+		return languages.getLang1();
 	}
 
-	public String getLang2() {
-		return lang2;
+	public VocabLang getLang2() {
+		return languages.getLang2();
 	}
 	
-	public boolean addWord(Word word) {
+	public boolean addWord(VocabWord word) {
 		if (word != null && words != null) {
 			words.add(word);
 			return DBManager.save(word); 
@@ -61,12 +57,12 @@ public class VocabList extends DBObj{
 		}
 	}
 	
-	public LinkedList<Word> getWords() {
+	public LinkedList<VocabWord> getWords() {
 		return words;
 	}
 	
 	public void fillWordsFromDB() {
-		LinkedList<Word> words = DBManager.getWordsByListID(super.getID());
+		LinkedList<VocabWord> words = DBManager.getWordsByListID(super.getID());
 		if(words != null) {
 			if(words.size() > 0) {
 				this.words = words;

@@ -22,8 +22,8 @@
 		<thead>
 			<tr>
 				<th class="small-col">ID</th>
-				<th>${list.lang1}</th>
-				<th>${list.lang2}</th>
+				<th>${list.lang1.toString()}</th>
+				<th>${list.lang2.toString()}</th>
 				<th class="small-col">delete</th>
 			</tr>
 		</thead>
@@ -48,10 +48,10 @@
     
     <div class="input-div">
     	<form action="" method="POST">
-	   		<label>input ${list.lang1}:</label>
+	   		<label>input ${list.lang1.toString()}:</label>
 			<input type="text" value="" name="wordLang1" autofocus="autofocus">
 			<br>
-			<label>input ${list.lang2}:</label>
+			<label>input ${list.lang2.toString()}:</label>
 			<input type="text" value="" name="wordLang2">
 			<br>
 			<input class="form-btn" type="submit" value="add">

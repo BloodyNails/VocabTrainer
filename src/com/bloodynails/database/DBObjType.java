@@ -2,5 +2,7 @@ package com.bloodynails.database;
 
 public enum DBObjType {
 	LIST,
-	WORD
+	WORD,
+	ROUND,
+	CYCLE
 }

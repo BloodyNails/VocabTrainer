@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bloodynails.VocabList;
-import com.bloodynails.Word;
+import com.bloodynails.VocabWord;
 import com.bloodynails.database.DBManager;
 
 /**
@@ -31,7 +31,7 @@ public class ListDetailView extends HttpServlet {
 			Long listID = Long.parseLong(request.getParameter("listID"));
 			if(listID != null && listID > -1) {
 				list = DBManager.getListByID(listID);
-				LinkedList<Word> words = list.getWords();
+				LinkedList<VocabWord> words = list.getWords();
 				
 				request.setAttribute("wordCount", words.size());
 				request.setAttribute("words", words);
@@ -61,7 +61,7 @@ public class ListDetailView extends HttpServlet {
 				if(wordLang1 != null && wordLang2 != null)
 					if(!wordLang1.isEmpty() && !wordLang2.isEmpty())
 						if(list != null)
-							list.addWord(new Word(list.getID(), wordLang1, wordLang2));	
+							list.addWord(new VocabWord(list.getID(), wordLang1, wordLang2));	
 			}
 		
 		doGet(request, response);

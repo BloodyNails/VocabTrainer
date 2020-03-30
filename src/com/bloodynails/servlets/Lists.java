@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bloodynails.VocabList;
+import com.bloodynails.VocabPair;
 import com.bloodynails.database.DBManager;
 
 /**
@@ -32,7 +33,7 @@ public class Lists extends HttpServlet {
 				request.setAttribute("lists", lists);
 			}
 		}
-		
+		// TODO: add available languages here instead of hardcoding them into html
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		request.getRequestDispatcher("/Lists.jsp").forward(request, response);	
@@ -53,10 +54,22 @@ public class Lists extends HttpServlet {
 			String description = (String) request.getParameter("description");
 			String lang1 = (String) request.getParameter("lang1");
 			String lang2 = (String) request.getParameter("lang2");
-			if(description != null && lang1 != null && lang2 != null) {
-				if(!description.isEmpty() && !lang1.isEmpty() && !lang2.isEmpty()) {
-					DBManager.save(new VocabList(description, lang1, lang2));
+			if(description != null) {
+				if(!description.isEmpty()) {
+					VocabPair langs = VocabPair.parseLangs(lang1, lang2);
+					if(langs.isValid()) {
+						DBManager.save(new VocabList(description, langs));
+					}
+					else {
+						// TODO: html warning (langs invalid either because lang1 == lang2 or because of other reasons)
+					}
 				}
+				else {
+					// TODO: html warning (description empty)
+				}
+			}
+			else {
+				throw new NullPointerException("description should not be null when posting new list form");
 			}
 		}
 		

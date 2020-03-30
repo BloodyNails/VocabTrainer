@@ -1,8 +1,31 @@
 TODO:
-	- implement warning warning when removing list
+	- implement html warnings
+		- maybe add a js script and callit from java if possible
+		- possible warnings:
+			- when removing list (with words > 0)
+			- when creating new list without description
+			- when creating new list with lang1 == lang2
+			- when leaving a site with a filled input
+				/VocabTrainer/Lists/
+				/VocabTrainer/Lists/View/
+				/VocabTrainer/Training/... (training session)
+		
 	- remove questionmark in url after forwarding request, might cause errors later
-	- vocabulary
-	- create stats table
+	- vocabulary training servlet
+		- create missing tables in db
+		- training servlet itself
+		- add datatypes (VocabRound, VocabCycle)
+		- make datatypes compatible with db (CRUD)
+		- add method which gets executed when leaving/closing browser
+			- stop timer
+			- save progress to db
+	
+some convenient additions in the future:
+	- remembering inputs 
+		- when adding a new word to the list and only one input is filled and the form is submitted, it should remember that input after reloading the page
+		- when closing browser
+		- when hitting the BACK button but input/inputs are filled
+	- remember last session
 	
 	- VocabTrainer/Training:
 		- /Vocabulary:

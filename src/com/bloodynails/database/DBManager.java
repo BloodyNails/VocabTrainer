@@ -8,7 +8,8 @@ import java.sql.Statement;
 import java.util.LinkedList;
 
 import com.bloodynails.VocabList;
-import com.bloodynails.Word;
+import com.bloodynails.VocabPair;
+import com.bloodynails.VocabWord;
 
 public class DBManager {
 
@@ -45,11 +46,12 @@ public class DBManager {
 					VocabList l = (VocabList) dbObj;
 					System.out.println("Saving: " + l.getType()+ ": " + l.getDescription());
 					query = "INSERT INTO LISTS (list_id, description, lang1, lang2) " + "VALUES ('"
-							+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1() + "', '"
-							+ l.getLang2() + "')";
+							+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1().toString() + "', '"
+							+ l.getLang2().toString() + "')";
+					System.out.println(query);
 					break;
 				case WORD:
-					Word w = (Word) dbObj;
+					VocabWord w = (VocabWord) dbObj;
 					System.out.println("Saving: " + w.getType()+ ": " + w.getWordLang1() + ", " + w.getWordLang2());
 					query = "INSERT INTO WORDS (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
 							+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
@@ -119,7 +121,7 @@ public class DBManager {
 				String description = (String) rs.getString("description");
 				String lang1 = (String) rs.getString("lang1");
 				String lang2 = (String) rs.getString("lang2");
-				lists.add(new VocabList(id, description, lang1, lang2));
+				lists.add(new VocabList(id, description, VocabPair.parseLangs(lang1, lang2)));
 
 			}
 		} catch (SQLException e) {
@@ -130,9 +132,9 @@ public class DBManager {
 		return lists;
 	}
 
-	public static LinkedList<Word> getWordsByListID(Long listID) {
+	public static LinkedList<VocabWord> getWordsByListID(Long listID) {
 		if (listID != null && listID > -1) {
-			LinkedList<Word> words = new LinkedList<Word>();
+			LinkedList<VocabWord> words = new LinkedList<VocabWord>();
 			final String query = "SELECT word_id, word_lang1, word_lang2 FROM vocabtrainer.words WHERE list_id = "
 					+ listID + ";";
 			try {
@@ -142,7 +144,7 @@ public class DBManager {
 					Long wID = (Long) rs.getLong("word_id");
 					String word1 = (String) rs.getString("word_lang1");
 					String word2 = (String) rs.getString("word_lang2");
-					words.add(new Word(wID, listID, word1, word2));
+					words.add(new VocabWord(wID, listID, word1, word2));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -166,7 +168,8 @@ public class DBManager {
 					String description = (String) rs.getString("description");
 					String lang1 = (String) rs.getString("lang1");
 					String lang2 = (String) rs.getString("lang2");
-					list = new VocabList(listID, description, lang1, lang2);
+					
+					list = new VocabList(listID, description, VocabPair.parseLangs(lang1, lang2));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -196,7 +199,7 @@ public class DBManager {
 		final VocabList list = getListByID(listID);
 
 		if (list != null) {
-			LinkedList<Word> words = list.getWords();
+			LinkedList<VocabWord> words = list.getWords();
 			if (words != null && words.size() > 0) {
 				for (int i = 0; i < words.size(); i++) {
 					deleteWordByID(words.get(i).getID());

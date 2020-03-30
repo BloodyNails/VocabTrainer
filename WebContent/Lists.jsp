@@ -34,8 +34,8 @@
 	            <tr class="${loop.index % 2 == 0 ? 'even' : 'odd'}">
 	            	<td>${list.ID}</td>
 	            	<td>${list.description}</td>
-	            	<td>${list.lang1}</td>
-	            	<td>${list.lang2}</td>
+	            	<td>${list.lang1.toString()}</td>
+	            	<td>${list.lang2.toString()}</td>
 	            	<td>
 	            		<form class="form" action="Lists/View" method="GET">
 	            			<input type="hidden" value="${list.ID}" name="listID">
@@ -55,12 +55,26 @@
     
     <br>
     <div class="input-div">
-	    <form action="" method="POST">
+	    <form action="" method="POST" id="newlist">
 	    	<label>description: </label><input type="text" value="" name="description" autofocus="autofocus"><br>
-	    	<label>first language: </label><input type="text" value="" name="lang1"><br>
-	    	<label>second language: </label><input type="text" value="" name="lang2"><br>
+	    		<!-- 
+			    	<label>first language: </label><input type="text" value="" name="lang1"><br>
+			    	<label>second language: </label><input type="text" value="" name="lang2"><br>
+		    	 -->
 	    	<input class="form-btn" type="submit" value="SUBMIT">
-	    </form>
+    	</form>
+    	
+	    	<select name="lang1" form="newlist">
+	    		<option value="German">German</option>
+	    		<option value="English">English</option>
+	    		<option value="Russian">Russian</option>
+	    	</select>
+	    
+	    <select name="lang2" form="newlist">
+	    		<option value="German">German</option>
+	    		<option value="English">English</option>
+	    		<option value="Russian">Russian</option>
+	    	</select>
     </div>
     
     
