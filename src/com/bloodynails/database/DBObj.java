@@ -1,8 +1,8 @@
 package com.bloodynails.database;
 
 public class DBObj {
-	private Long ID;
-	private DBObjType type;
+	protected Long ID;
+	protected DBObjType type;
 
 	public DBObj(Long ID, DBObjType type) {
 		this.ID = ID;

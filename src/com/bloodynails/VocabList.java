@@ -35,6 +35,12 @@ public class VocabList extends DBObj{
 		fillWordsFromDB();
 	}
 	
+	@Override
+	public String toString() {
+		return "VocabList:"+"\nlistID: "+ID+"\ndescription"+description+"\nlanguages: "+languages.getLang1().toString()
+				+", "+languages.getLang2().toString();
+	}
+	
 	public String getDescription() {
 		return description;
 	}
@@ -49,12 +55,20 @@ public class VocabList extends DBObj{
 	
 	public boolean addWord(VocabWord word) {
 		if (word != null && words != null) {
-			words.add(word);
-			return DBManager.save(word); 
+			return words.add(word);
 		}
 		else {
 			return false;
 		}
+	}
+	
+	public VocabWord deleteWordByID(Long wordID) {
+		for(int i = 0; i < words.size(); i++) {
+			if(words.get(i).getID() == wordID) {
+				return words.remove(i);
+			}
+		}
+		return null;
 	}
 	
 	public LinkedList<VocabWord> getWords() {

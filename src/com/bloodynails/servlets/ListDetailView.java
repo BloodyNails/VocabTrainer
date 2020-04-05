@@ -50,6 +50,7 @@ public class ListDetailView extends HttpServlet {
 		if(request.getParameter("wordID") != null) {
 			Long wordID = Long.parseLong(request.getParameter("wordID"));
 			if(wordID != null && wordID > -1) {
+				list.deleteWordByID(wordID);
 				DBManager.deleteWordByID(wordID);
 			}	
 		}
@@ -60,8 +61,14 @@ public class ListDetailView extends HttpServlet {
 				String wordLang2 = (String) request.getParameter("wordLang2");
 				if(wordLang1 != null && wordLang2 != null)
 					if(!wordLang1.isEmpty() && !wordLang2.isEmpty())
-						if(list != null)
-							list.addWord(new VocabWord(list.getID(), wordLang1, wordLang2));	
+						if(list != null) {
+							VocabWord w = new VocabWord(list.getID(), wordLang1, wordLang2);
+							if(list.addWord(w)) {
+								DBManager.save(w); 
+							}
+							
+						}
+							
 			}
 		
 		doGet(request, response);

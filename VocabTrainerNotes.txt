@@ -26,10 +26,15 @@ some convenient additions in the future:
 		- when closing browser
 		- when hitting the BACK button but input/inputs are filled
 	- remember last session
+	- change lang1 and lang2 of lists
 	
 	- VocabTrainer/Training:
 		- /Vocabulary:
 			Sequence:
+				- list of rounds
+				- create new round / delete round / continue paused round / check stats from finished round
+			
+				-1: select lists you want to get asked
 				0: check if interrupted round:
 						yes: get last_cycle_id from round, check if cycle interrupted: 
 							yes: get curr_word_id from cycle, load word and continue with (5), start timer again
@@ -78,7 +83,7 @@ Database Stuff:
 			word_lang2
 		)
 		
-		cycle (
+		cycles (
 			cycle_id PRIMARY KEY,
 			round_id FOREIGN KEY,
 			completed (true || false)
@@ -98,10 +103,11 @@ Database Stuff:
 			prompted (true || false)
 		)
 		
-		round (
+		// IDs are saved as String: "1,2,3,4"
+		rounds (
 			round_id PRIMARY KEY,
 			completed (true || false),
-			list_ids (array of all list ID's the words came from),
+			list_ids (array of all list ID's the words came from), 
 			lang1,
 			lang2,
 			prompted_lang,
@@ -142,3 +148,33 @@ Database Stuff:
 			PRIMARY KEY (word_id),
 			FOREIGN KEY (list_id) REFERENCES lists(list_id)
 			);	
+			
+		CREATE TABLE rounds(
+			round_id INT UNSIGNED NOT NULL,
+			completed boolean NOT NULL,
+			list_ids VARCHAR(100) NOT NULL,
+			cycle_ids VARCHAR(100),
+			lang1 VARCHAR(100) NOT NULL,
+			lang2 VARCHAR(100) NOT NULL,
+			prompted_lang VARCHAR(100) NOT NULL,
+			time FLOAT NOT NULL,
+			true_count INT UNSIGNED NOT NULL,
+			false_count INT UNSIGNED NOT NULL,
+			tf_ratio FLOAT NOT NULL,
+			PRIMARY KEY (round_id)
+		);
+		
+		CREATE TABLE cycles (
+			cycle_id INT UNSIGNED NOT NULL,
+			round_id INT UNSIGNED NOT NULL,
+			completed BOOLEAN NOT NULL,
+			word_count INT UNSIGNED NOT NULL,
+			curr_word_id INT UNSIGNED NOT NULL,
+			true_count INT UNSIGNED NOT NULL,
+			false_count INT UNSIGNED NOT NULL,
+			tf_ratio FLOAT NOT NULL,
+			time FLOAT NOT NULL,
+			PRIMARY KEY (cycle_id),
+			FOREIGN KEY (round_id) REFERENCES rounds(round_id)
+		);
+	

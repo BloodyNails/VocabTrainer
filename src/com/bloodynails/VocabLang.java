@@ -13,6 +13,20 @@ public enum VocabLang {
 	
 	@Override
 	public String toString() {
-		return language;
+		return this.language;
+	}
+	
+	public static VocabLang parseLang(String s) {
+		
+		switch (s.toLowerCase()) {
+			case "german":
+				return GERMAN;
+			case "english":
+				return ENGLISH;
+			case "russian":
+				return RUSSIAN;
+			default:
+				return null;
+		}
 	}
 }

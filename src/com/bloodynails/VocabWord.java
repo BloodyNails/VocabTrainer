@@ -23,6 +23,11 @@ public class VocabWord extends DBObj{
 		this.wordLang2 = wordLang2;
 	}
 	
+	@Override
+	public String toString() {
+		return "VocabWord:"+"\nwordID: "+ID+"\nlistID: "+listID+"\nwordLang1: "+wordLang1+"\nwordLang2: "+wordLang2;
+	}
+	
 	public Long getListID() {
 		return this.listID;
 	}

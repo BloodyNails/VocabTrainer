@@ -7,9 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
+import com.bloodynails.VocabLang;
 import com.bloodynails.VocabList;
 import com.bloodynails.VocabPair;
+import com.bloodynails.VocabRound;
 import com.bloodynails.VocabWord;
+import com.bloodynails.logging.Logger;
 
 public class DBManager {
 
@@ -26,7 +29,7 @@ public class DBManager {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection connection = DriverManager.getConnection(url, user, pass);
-			System.out.println("Database connection succeeded.");
+			Logger.log("Database connection succeeded.");
 			return connection;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -44,19 +47,34 @@ public class DBManager {
 			switch (dbObj.getType()) {
 				case LIST:
 					VocabList l = (VocabList) dbObj;
-					System.out.println("Saving: " + l.getType()+ ": " + l.getDescription());
-					query = "INSERT INTO LISTS (list_id, description, lang1, lang2) " + "VALUES ('"
-							+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1().toString() + "', '"
-							+ l.getLang2().toString() + "')";
+					Logger.log("Saving: " + l.toString());
+					query = "INSERT INTO lists (list_id, description, lang1, lang2) " 
+							+ "VALUES ('"
+								+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1().toString() + "', '"
+								+ l.getLang2().toString() 
+							+ "')";
 					System.out.println(query);
 					break;
 				case WORD:
 					VocabWord w = (VocabWord) dbObj;
-					System.out.println("Saving: " + w.getType()+ ": " + w.getWordLang1() + ", " + w.getWordLang2());
-					query = "INSERT INTO WORDS (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
-							+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
-							+ "', N'" + w.getWordLang2() + "')";
+					Logger.log("Saving: " + w.toString());
+					query = "INSERT INTO words (word_id, list_id, word_lang1, word_lang2) " 
+							+ "VALUES ('"
+								+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
+								+ "', N'" + w.getWordLang2() 
+							+ "')";
 					break;
+				case ROUND:
+					VocabRound r = (VocabRound) dbObj;
+					Logger.log("Saving: " + r.toString());
+					query = "INSERT INTO `vocabtrainer`.`rounds` (`round_id`, `completed`, `list_ids`, `lang1`, `lang2`, `prompted_lang`, `time`, `true_count`, `false_count`, `tf_ratio`)"
+							+ "VALUES ('"
+								+ r.getID() + "', '" + r.isCompletedInt() + "', '" + r.listIDsToString() + "', '" + r.cycleIDsToString()
+								+ "', '" + r.getLanguages().getLang1().toString() + "', '" + r.getLanguages().getLang2().toString()
+								+ "', '" + r.getPromptedLang().toString() + "', '" + r.getTime() + "', '" + r.getTrueCount()
+								+ "', '" + r.getFalseCount() + "', '" + r.getTfRatio()
+							+ "')";
+					Logger.log(query);
 				default:
 					query = "";
 					break;
@@ -107,6 +125,23 @@ public class DBManager {
 		}
 		return id;
 	}
+	
+	public static Long getNextRoundID() {
+		final String query = "SELECT round_id FROM vocabtrainer.rounds ORDER BY round_id ASC;";
+		Long id = -1L;
+		Long tmp_id = -1L;
+		try {
+			s = connection.createStatement();
+			ResultSet rs = s.executeQuery(query);
+			if(rs.last()) {
+				tmp_id = (Long) rs.getLong("round_id");
+			}
+			id = tmp_id + 1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return id;
+	}
 
 	public static LinkedList<VocabList> getAllLists() {
 
@@ -121,7 +156,9 @@ public class DBManager {
 				String description = (String) rs.getString("description");
 				String lang1 = (String) rs.getString("lang1");
 				String lang2 = (String) rs.getString("lang2");
-				lists.add(new VocabList(id, description, VocabPair.parseLangs(lang1, lang2)));
+				VocabList l = new VocabList(id, description, VocabPair.parseLangs(lang1, lang2));
+				l.fillWordsFromDB();
+				lists.add(l);
 
 			}
 		} catch (SQLException e) {
@@ -130,6 +167,63 @@ public class DBManager {
 		}
 
 		return lists;
+	}
+	
+	public static LinkedList<VocabRound> getAllRounds() {
+
+		LinkedList<VocabRound> rounds = new LinkedList<VocabRound>();
+
+		final String query = "SELECT * FROM rounds;";
+		try {
+			s = connection.createStatement();
+			ResultSet rs = s.executeQuery(query);
+			while (rs.next()) {
+				Long id = (Long) rs.getLong("round_id");
+				boolean completed = rs.getBoolean("completed");
+				LinkedList<Long> listIDs = parseIDs(rs.getString("list_ids"));
+				LinkedList<Long> cycleIDs;
+				if(rs.getString("cycle_ids") != null) {
+					cycleIDs = parseIDs(rs.getString("cycle_ids"));
+				}
+				else {
+					cycleIDs = new LinkedList<Long>();
+				}
+				VocabPair languages = new VocabPair(
+						VocabLang.parseLang(rs.getString("lang1")),
+						VocabLang.parseLang(rs.getString("lang2"))
+						);
+				VocabLang promptedLang = VocabLang.parseLang(rs.getString("prompted_lang"));
+				float time = rs.getFloat("time");
+				int trueCount = rs.getInt("true_count");
+				int falseCount = rs.getInt("false_count");
+				float tfRatio = rs.getFloat("tf_ratio");
+				
+				VocabRound r = new VocabRound(id, completed, listIDs, cycleIDs, languages, 
+						promptedLang, time, trueCount, falseCount, tfRatio);
+				rounds.add(r);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		return rounds;
+	}
+	
+	private static LinkedList<Long> parseIDs(String s) {
+		LinkedList<Long> IDs = new LinkedList<Long>();
+		if(s.isEmpty()) {
+			return IDs;
+		}
+		else {
+			String[] stringIDs = s.split(",");
+			
+			for(int i = 0; i < stringIDs.length; i++) {
+				IDs.add(Long.parseLong(stringIDs[i]));
+			}
+			return IDs;
+		}
+		
 	}
 
 	public static LinkedList<VocabWord> getWordsByListID(Long listID) {
@@ -170,6 +264,7 @@ public class DBManager {
 					String lang2 = (String) rs.getString("lang2");
 					
 					list = new VocabList(listID, description, VocabPair.parseLangs(lang1, lang2));
+					list.fillWordsFromDB();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -179,7 +274,6 @@ public class DBManager {
 		} else {
 			return null;
 		}
-
 	}
 
 	public static boolean deleteWordByID(Long wordID) {
@@ -216,4 +310,6 @@ public class DBManager {
 			return false;
 		}
 	}
+
+
 }

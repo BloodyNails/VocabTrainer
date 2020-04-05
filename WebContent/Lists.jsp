@@ -57,10 +57,6 @@
     <div class="input-div">
 	    <form action="" method="POST" id="newlist">
 	    	<label>description: </label><input type="text" value="" name="description" autofocus="autofocus"><br>
-	    		<!-- 
-			    	<label>first language: </label><input type="text" value="" name="lang1"><br>
-			    	<label>second language: </label><input type="text" value="" name="lang2"><br>
-		    	 -->
 	    	<input class="form-btn" type="submit" value="SUBMIT">
     	</form>
     	

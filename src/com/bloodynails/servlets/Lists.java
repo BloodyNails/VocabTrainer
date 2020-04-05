@@ -27,9 +27,8 @@ public class Lists extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if(DBManager.getAllLists() != null) {
 			LinkedList<VocabList> lists = DBManager.getAllLists();
-			if(lists != null) {
-				int listCount = lists.size();
-				request.setAttribute("listCount", listCount);		
+			if(lists != null && lists.size() > 0) {
+				request.setAttribute("listCount", lists.size());		
 				request.setAttribute("lists", lists);
 			}
 		}
@@ -62,10 +61,12 @@ public class Lists extends HttpServlet {
 					}
 					else {
 						// TODO: html warning (langs invalid either because lang1 == lang2 or because of other reasons)
+						// add this to logger
 					}
 				}
 				else {
 					// TODO: html warning (description empty)
+					// add this to logger
 				}
 			}
 			else {

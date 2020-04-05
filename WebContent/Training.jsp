@@ -16,7 +16,7 @@
 	</form>
 	
 	<br>
-	<form action="Training/Vocabulary" class="form" method="GET">
+	<form action="Training/Vocabulary" style="" method="GET">
 		<input class="table-btn" type="submit" value="Vocabulary">
 	</form>
 </body>
