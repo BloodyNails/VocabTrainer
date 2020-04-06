@@ -10,67 +10,59 @@ public class VocabRound extends DBObj {
 	// TODO: check if languages are compatible with selected lists
 	// also make it so only lists of same languages can be selected
 
-	private boolean completed; // was the round completed the last time the user interacted with it
-	private LinkedList<Long> listIDs; // IDs of all lists which are selected before creating round
-	private LinkedList<Long> cycleIDs; // IDs of the cycles which were
+	private boolean completed = false; // was the round completed the last time the user interacted with it
+	private LinkedList<Long> listIDs = new LinkedList<Long>(); // IDs of all lists which are selected before creating
+																// round
+	private LinkedList<Long> cycleIDs = new LinkedList<Long>(); // IDs of the cycles which were
 	private VocabPair languages;
 	private VocabLang promptedLang;
-	private float time; // total time which was spent during this round (collect values from the timers
-						// inside the cycles)
-	private int trueCount; // amount of submitted inputs with true answers (sum of all cycles)
-	private int falseCount; // amount of submitted inputs with false answers (sum of all cycles)
-	private float tfRatio; // average ration of all cycles
+	private float time = 0f; // total time which was spent during this round (collect values from the timers
+	// inside the cycles)
+	private int trueCount = 0; // amount of submitted inputs with true answers (sum of all cycles)
+	private int falseCount = 0; // amount of submitted inputs with false answers (sum of all cycles)
+	private float tfRatio = 1f; // average ration of all cycles
 
 	public VocabRound(Long ID, boolean completed, LinkedList<Long> listIDs, LinkedList<Long> cycleIDs,
-			VocabPair languages, VocabLang promptedLang, float time, int trueCount, int falseCount,
-			float tfRatio) {
+			VocabPair languages, VocabLang promptedLang, float time, int trueCount, int falseCount, float tfRatio) {
 		super(ID, DBObjType.ROUND);
 		this.completed = completed;
 		this.listIDs = listIDs;
 		this.cycleIDs = cycleIDs;
 		this.languages = languages;
-		if(languages.contains(promptedLang))
-			this.promptedLang = promptedLang;
+		if (languages.contains(promptedLang)) this.promptedLang = promptedLang;
 		this.time = time;
 		this.trueCount = trueCount;
 		this.falseCount = falseCount;
 		this.tfRatio = tfRatio;
 	}
-	
-	public VocabRound(boolean completed, LinkedList<Long> listIDs, LinkedList<Long> cycleIDs,
-			VocabPair languages, VocabLang promptedLang, float time, int trueCount, int falseCount,
-			float tfRatio) {
+
+	public VocabRound(boolean completed, LinkedList<Long> listIDs, LinkedList<Long> cycleIDs, VocabPair languages,
+			VocabLang promptedLang, float time, int trueCount, int falseCount, float tfRatio) {
 		super(DBManager.getNextRoundID(), DBObjType.ROUND);
 		this.completed = completed;
 		this.listIDs = listIDs;
 		this.cycleIDs = cycleIDs;
 		this.languages = languages;
-		if(languages.contains(promptedLang))
-			this.promptedLang = promptedLang;
+		if (languages.contains(promptedLang)) this.promptedLang = promptedLang;
 		this.time = time;
 		this.trueCount = trueCount;
 		this.falseCount = falseCount;
 		this.tfRatio = tfRatio;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "roundID: "+ID+"\n"
-				+"completed: "+completed+"\n" 
-				+"listIDs: "+listIDs.toString()+"\n"
-				+"cycleIDs: "+cycleIDs.toString()+"\n"
-				+"languages: "+languages.getLang1().toString()+", "+languages.getLang2().toString()+"\n"
-				+"promptedLang: "+promptedLang.toString()+"\n"
-				+"time: "+time+"\n"
-				+"trueCount: "+trueCount+"\n"
-				+"falseCount: "+falseCount+"\n"
-				+"tfRatio :"+tfRatio;
+		return "roundID: " + ID + "\n" + "completed: " + completed + "\n" + "listIDs: " + listIDs.toString() + "\n"
+				+ "cycleIDs: " + cycleIDs.toString() + "\n" + "languages: " + languages.getLang1().toString() + ", "
+				+ languages.getLang2().toString() + "\n" + "promptedLang: " + promptedLang.toString() + "\n" + "time: "
+				+ time + "\n" + "trueCount: " + trueCount + "\n" + "falseCount: " + falseCount + "\n" + "tfRatio :"
+				+ tfRatio;
 	}
 
 	public boolean isCompleted() {
 		return completed;
 	}
-	
+
 	public int isCompletedInt() {
 		return completed ? 1 : 0;
 	}
@@ -78,26 +70,24 @@ public class VocabRound extends DBObj {
 	public LinkedList<Long> getListIDs() {
 		return listIDs;
 	}
-	
+
 	public String listIDsToString() {
 		String s = "";
-		if(listIDs != null && listIDs.size() > 0) {
-			for(int i = 0; i < listIDs.size(); i++) {
+		if (cycleIDs != null && listIDs.size() > 0) {
+			for (int i = 0; i < listIDs.size(); i++) {
+				if (i > 0) s += ",";
 				s += listIDs.get(i).toString();
-				if(i>0 && i<listIDs.size()-1)
-					s += ",";
 			}
 		}
 		return s;
 	}
-	
+
 	public String cycleIDsToString() {
 		String s = "";
-		if(cycleIDs != null && cycleIDs.size() > 0) {
-			for(int i = 0; i < cycleIDs.size(); i++) {
+		if (cycleIDs != null && cycleIDs.size() > 0) {
+			for (int i = 0; i < cycleIDs.size(); i++) {
+				if (i > 0) s += ",";
 				s += cycleIDs.get(i).toString();
-				if(i>0 && i<cycleIDs.size()-1)
-					s += ",";
 			}
 		}
 		return s;
@@ -129,6 +119,10 @@ public class VocabRound extends DBObj {
 
 	public float getTfRatio() {
 		return tfRatio;
+	}
+
+	public void addTime(float time) {
+		this.time += time;
 	}
 
 }

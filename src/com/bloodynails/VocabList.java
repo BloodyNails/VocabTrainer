@@ -11,14 +11,6 @@ public class VocabList extends DBObj{
 	private VocabPair languages;
 	private LinkedList<VocabWord> words;
 	
-	public VocabList() {
-		// only needed when a VocabList must be initialized!
-		super(-1L, DBObjType.LIST);
-		this.description = "";
-		this.languages = new VocabPair();
-		words = new LinkedList<VocabWord>();
-	}
-	
 	public VocabList (String description, VocabPair languages) {
 		super(DBManager.getNextListID(), DBObjType.LIST);
 		this.description = description;
@@ -75,13 +67,14 @@ public class VocabList extends DBObj{
 		return words;
 	}
 	
-	public void fillWordsFromDB() {
+	public VocabList fillWordsFromDB() {
 		LinkedList<VocabWord> words = DBManager.getWordsByListID(super.getID());
 		if(words != null) {
 			if(words.size() > 0) {
 				this.words = words;
 			}
 		}
+		return this;
 	}
 
 }

@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bloodynails.VocabLang;
 import com.bloodynails.VocabList;
+import com.bloodynails.VocabPair;
 import com.bloodynails.VocabRound;
 import com.bloodynails.database.DBManager;
 import com.bloodynails.logging.Logger;
@@ -37,12 +39,10 @@ public class Vocabulary extends HttpServlet {
 		//  view stats
 		LinkedList<VocabRound> rounds = DBManager.getAllRounds();
 		
-		for(int i = 0; i < rounds.size(); i++) {
-			Logger.log("\n"+rounds.get(i).toString());
-		}
+		request.setAttribute("rounds", rounds);
+		request.setAttribute("roundCount", rounds.size());
 		
-		
-		
+		request.getRequestDispatcher("/Rounds.jsp").forward(request, response);
 		
 	}
 

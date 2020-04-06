@@ -48,33 +48,29 @@ public class DBManager {
 				case LIST:
 					VocabList l = (VocabList) dbObj;
 					Logger.log("Saving: " + l.toString());
-					query = "INSERT INTO lists (list_id, description, lang1, lang2) " 
-							+ "VALUES ('"
-								+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1().toString() + "', '"
-								+ l.getLang2().toString() 
-							+ "')";
+					query = "INSERT INTO lists (list_id, description, lang1, lang2) " + "VALUES ('"
+							+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1().toString()
+							+ "', '" + l.getLang2().toString() + "')";
 					System.out.println(query);
 					break;
 				case WORD:
 					VocabWord w = (VocabWord) dbObj;
 					Logger.log("Saving: " + w.toString());
-					query = "INSERT INTO words (word_id, list_id, word_lang1, word_lang2) " 
-							+ "VALUES ('"
-								+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
-								+ "', N'" + w.getWordLang2() 
-							+ "')";
+					query = "INSERT INTO words (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
+							+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
+							+ "', N'" + w.getWordLang2() + "')";
 					break;
 				case ROUND:
 					VocabRound r = (VocabRound) dbObj;
 					Logger.log("Saving: " + r.toString());
-					query = "INSERT INTO `vocabtrainer`.`rounds` (`round_id`, `completed`, `list_ids`, `lang1`, `lang2`, `prompted_lang`, `time`, `true_count`, `false_count`, `tf_ratio`)"
-							+ "VALUES ('"
-								+ r.getID() + "', '" + r.isCompletedInt() + "', '" + r.listIDsToString() + "', '" + r.cycleIDsToString()
-								+ "', '" + r.getLanguages().getLang1().toString() + "', '" + r.getLanguages().getLang2().toString()
-								+ "', '" + r.getPromptedLang().toString() + "', '" + r.getTime() + "', '" + r.getTrueCount()
-								+ "', '" + r.getFalseCount() + "', '" + r.getTfRatio()
-							+ "')";
+					query = "INSERT INTO rounds (round_id, completed, list_ids, cycle_ids, lang1, lang2, prompted_lang, time, true_count, false_count, tf_ratio) "
+							+ "VALUES ('" + r.getID() + "', '" + r.isCompletedInt() + "', '" + r.listIDsToString()
+							+ "', '" + r.cycleIDsToString() + "', '" + r.getLanguages().getLang1().toString() + "', '"
+							+ r.getLanguages().getLang2().toString() + "', '" + r.getPromptedLang().toString() + "', '"
+							+ r.getTime() + "', '" + r.getTrueCount() + "', '" + r.getFalseCount() + "', '"
+							+ r.getTfRatio() + "')";
 					Logger.log(query);
+					break;
 				default:
 					query = "";
 					break;
@@ -99,7 +95,7 @@ public class DBManager {
 		try {
 			s = connection.createStatement();
 			ResultSet rs = s.executeQuery(query);
-			if(rs.last()) {
+			if (rs.last()) {
 				tmp_id = (Long) rs.getLong("word_id");
 			}
 			id = tmp_id + 1;
@@ -116,7 +112,7 @@ public class DBManager {
 		try {
 			s = connection.createStatement();
 			ResultSet rs = s.executeQuery(query);
-			if(rs.last()) {
+			if (rs.last()) {
 				tmp_id = (Long) rs.getLong("list_id");
 			}
 			id = tmp_id + 1;
@@ -125,7 +121,7 @@ public class DBManager {
 		}
 		return id;
 	}
-	
+
 	public static Long getNextRoundID() {
 		final String query = "SELECT round_id FROM vocabtrainer.rounds ORDER BY round_id ASC;";
 		Long id = -1L;
@@ -133,7 +129,7 @@ public class DBManager {
 		try {
 			s = connection.createStatement();
 			ResultSet rs = s.executeQuery(query);
-			if(rs.last()) {
+			if (rs.last()) {
 				tmp_id = (Long) rs.getLong("round_id");
 			}
 			id = tmp_id + 1;
@@ -156,8 +152,7 @@ public class DBManager {
 				String description = (String) rs.getString("description");
 				String lang1 = (String) rs.getString("lang1");
 				String lang2 = (String) rs.getString("lang2");
-				VocabList l = new VocabList(id, description, VocabPair.parseLangs(lang1, lang2));
-				l.fillWordsFromDB();
+				VocabList l = new VocabList(id, description, VocabPair.parseLangs(lang1, lang2)).fillWordsFromDB();
 				lists.add(l);
 
 			}
@@ -168,7 +163,7 @@ public class DBManager {
 
 		return lists;
 	}
-	
+
 	public static LinkedList<VocabRound> getAllRounds() {
 
 		LinkedList<VocabRound> rounds = new LinkedList<VocabRound>();
@@ -181,25 +176,17 @@ public class DBManager {
 				Long id = (Long) rs.getLong("round_id");
 				boolean completed = rs.getBoolean("completed");
 				LinkedList<Long> listIDs = parseIDs(rs.getString("list_ids"));
-				LinkedList<Long> cycleIDs;
-				if(rs.getString("cycle_ids") != null) {
-					cycleIDs = parseIDs(rs.getString("cycle_ids"));
-				}
-				else {
-					cycleIDs = new LinkedList<Long>();
-				}
-				VocabPair languages = new VocabPair(
-						VocabLang.parseLang(rs.getString("lang1")),
-						VocabLang.parseLang(rs.getString("lang2"))
-						);
+				LinkedList<Long> cycleIDs = parseIDs(rs.getString("cycle_ids"));
+				VocabPair languages = new VocabPair(VocabLang.parseLang(rs.getString("lang1")),
+						VocabLang.parseLang(rs.getString("lang2")));
 				VocabLang promptedLang = VocabLang.parseLang(rs.getString("prompted_lang"));
 				float time = rs.getFloat("time");
 				int trueCount = rs.getInt("true_count");
 				int falseCount = rs.getInt("false_count");
 				float tfRatio = rs.getFloat("tf_ratio");
-				
-				VocabRound r = new VocabRound(id, completed, listIDs, cycleIDs, languages, 
-						promptedLang, time, trueCount, falseCount, tfRatio);
+
+				VocabRound r = new VocabRound(id, completed, listIDs, cycleIDs, languages, promptedLang, time,
+						trueCount, falseCount, tfRatio);
 				rounds.add(r);
 			}
 		} catch (SQLException e) {
@@ -209,21 +196,17 @@ public class DBManager {
 
 		return rounds;
 	}
-	
+
 	private static LinkedList<Long> parseIDs(String s) {
 		LinkedList<Long> IDs = new LinkedList<Long>();
-		if(s.isEmpty()) {
-			return IDs;
-		}
-		else {
+		if(s != null && !s.isEmpty()) {
 			String[] stringIDs = s.split(",");
-			
-			for(int i = 0; i < stringIDs.length; i++) {
+
+			for (int i = 0; i < stringIDs.length; i++) {
 				IDs.add(Long.parseLong(stringIDs[i]));
 			}
-			return IDs;
 		}
-		
+		return IDs;
 	}
 
 	public static LinkedList<VocabWord> getWordsByListID(Long listID) {
@@ -253,24 +236,54 @@ public class DBManager {
 
 	public static VocabList getListByID(Long listID) {
 		if (listID != null && listID > -1) {
-			VocabList list = new VocabList();
 			final String query = "SELECT * FROM lists WHERE list_id = " + listID + ";";
 			try {
 				s = connection.createStatement();
 				ResultSet rs = s.executeQuery(query);
-				if(rs.last()) {
+				if (rs.last()) {
 					String description = (String) rs.getString("description");
 					String lang1 = (String) rs.getString("lang1");
 					String lang2 = (String) rs.getString("lang2");
-					
-					list = new VocabList(listID, description, VocabPair.parseLangs(lang1, lang2));
-					list.fillWordsFromDB();
+
+					return (new VocabList(listID, description, VocabPair.parseLangs(lang1, lang2)).fillWordsFromDB());
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return null;
 			}
-			return list;
+			return null;
+		} else {
+			return null;
+		}
+	}
+
+	public static VocabRound getRoundByID(Long roundID) {
+		if (roundID != null && roundID > -1) {
+			final String query = "SELECT * FROM rounds WHERE round_id = " + roundID + ";";
+			try {
+				s = connection.createStatement();
+				ResultSet rs = s.executeQuery(query);
+				if (rs.last()) {
+					Long id = (Long) rs.getLong("round_id");
+					boolean completed = rs.getBoolean("completed");
+					LinkedList<Long> listIDs = parseIDs(rs.getString("list_ids"));
+					LinkedList<Long> cycleIDs = parseIDs(rs.getString("cycle_ids"));
+					VocabPair languages = new VocabPair(VocabLang.parseLang(rs.getString("lang1")),
+							VocabLang.parseLang(rs.getString("lang2")));
+					VocabLang promptedLang = VocabLang.parseLang(rs.getString("prompted_lang"));
+					float time = rs.getFloat("time");
+					int trueCount = rs.getInt("true_count");
+					int falseCount = rs.getInt("false_count");
+					float tfRatio = rs.getFloat("tf_ratio");
+
+					return (new VocabRound(id, completed, listIDs, cycleIDs, languages, promptedLang, time, trueCount,
+							falseCount, tfRatio));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
+			}
+			return null;
 		} else {
 			return null;
 		}
@@ -310,6 +323,5 @@ public class DBManager {
 			return false;
 		}
 	}
-
 
 }
