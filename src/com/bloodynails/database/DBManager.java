@@ -317,7 +317,7 @@ public class DBManager {
 
 		try {
 			s = connection.createStatement();
-			Logger.log("Deleting LIST: #" + list.getID() + ", " + list.getDescription());
+			Logger.log("Deleting LIST: #" + list.getID().toString() + ", " + list.getDescription());
 			return s.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
