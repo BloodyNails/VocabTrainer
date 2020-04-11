@@ -4,10 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Logger {
-	private static Counter counter = Counter.getInstance();
-	private static LocalDateTime date;
 	// TODO: pattern is not printed as it is declared here
-	private static final String datePattern = "yyyy.MM.dd HH:mm:ss";
+	private static final String datePattern = "yyyy.MM.dd'-'HH:mm:ss";
 	
 	public static void log(String s) {
 		log(MessageType.INFO, s);
@@ -23,9 +21,8 @@ public class Logger {
 	// TODO:
 	// write s to file and reset counter after every new file
 	private static void print(MessageType t, String s) {
-		date = LocalDateTime.now();
-		date.format(DateTimeFormatter.ofPattern(datePattern));
-		System.out.println(counter.toString()+" ["+date.toString()+"]["+t.toString()+"]: " + s);
+		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern(datePattern)).toString();
+		System.out.println("["+dateString+"]["+t.toString()+"]: " + s);
 	}
 	
 	private static void multiLinePrint(MessageType t, String s) {

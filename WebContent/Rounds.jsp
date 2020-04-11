@@ -9,15 +9,21 @@
 	<title>VocabTrainer - Training</title>
 </head>
 <body>
-	<h1>VocabTrainer -> Training</h1>
-	
-	<form action="/VocabTrainer" method="GET">
+	<h1>VocabTrainer -> Training -> Vocabulary</h1>
+	<form action="/VocabTrainer/Training" method="GET">
 		<input class="reg-btn" type="submit" value="BACK">
 	</form>
 	
 	<br>
-	<form action="Training/Vocabulary" style="" method="GET">
-		<input class="reg-btn" type="submit" value="Vocabulary">
-	</form>
+	
+	<c:choose>
+		<c:when test="${roundCount < 1}">
+			create new round
+		</c:when>
+		<c:otherwise>
+			roundlist
+		</c:otherwise>
+	</c:choose>
+	
 </body>
 </html>
