@@ -20,7 +20,7 @@ TODO:
 			- stop timer
 			- save progress to db
 	
-some convenient additions in the future:
+Some convenient additions in the future:
 	- remembering inputs 
 		- when adding a new word to the list and only one input is filled and the form is submitted, it should remember that input after reloading the page
 		- when closing browser
@@ -28,42 +28,42 @@ some convenient additions in the future:
 	- remember last session
 	- change lang1 and lang2 of lists
 	
-	- VocabTrainer/Training:
-		- /Vocabulary:
-			Sequence:
-				- list of rounds
-				- create new round / delete round / continue paused round / check stats from finished round
-			
-				-1: select lists you want to get asked
-				0: check if interrupted round:
-						yes: get last_cycle_id from round, check if cycle interrupted: 
-							yes: get curr_word_id from cycle, load word and continue with (5), start timer again
-							no: start new cycle
-						no: start a new round go to (1)
-				1: (select specific list || select all lists) -> choose language to be prompted
-				2: all words from selected lists read from "words" and written to "vocab_words" with: prompted = false
-				3: create cycle (false_count = 0, true_count = 0), add cycle_id to cycle_ids in "rounds", count words in "vocab_words" and set cycle->word_count to counted value, set prompted to false for all words in "vocab_words", start timer
-				4: create prompt: get all "prompted == false" words from "vocab_words", 
-					if amount == 0: stop timer, end cycle
-						check false_count: 
-							if fc == 0: end round (6)
-							if fc > 0: start new cycle (3)
-					if amount > 0: get random word from "prompted == false" words
-				5: input false: false_count+1 (code and db), mark word as prompted in "vocab_words", go to (4)
-					input true: true_count+1 (code and db), delete word in "vocab_words", go to (4)
-				6: round finished: get all stats from cycles, ...
-			
-			- make every round cycle based: first cycle all words, second cycle the words you didn't know at first, and so on... until you entered every word correct
-			- layout:
-				- timer which increases whilst the round proceeds
-				- label: question (get a random word from the amount of words which has been selected before, which has not been questioned yet)
-				- input: answer (translate the word from label to your selected language)
-				- button: submit (send answer to servlet and check for errors)
-			- stats: 
-				correctness (therefore also: total number of false/true inputs), 
-				time -> therefore add timer and display it on every round
-				total number of cycles, 
-				avg. cycles per round
+VocabTrainer/Training:
+	- /Vocabulary:
+		Sequence:
+			- list of rounds
+			- create new round / delete round / continue paused round / check stats from finished round
+		
+			-1: select lists you want to get asked
+			0: check if interrupted round:
+					yes: get last_cycle_id from round, check if cycle interrupted: 
+						yes: get curr_word_id from cycle, load word and continue with (5), start timer again
+						no: start new cycle
+					no: start a new round go to (1)
+			1: (select specific list || select all lists) -> choose language to be prompted
+			2: all words from selected lists read from "words" and written to "vocab_words" with: prompted = false
+			3: create cycle (false_count = 0, true_count = 0), add cycle_id to cycle_ids in "rounds", count words in "vocab_words" and set cycle->word_count to counted value, set prompted to false for all words in "vocab_words", start timer
+			4: create prompt: get all "prompted == false" words from "vocab_words", 
+				if amount == 0: stop timer, end cycle
+					check false_count: 
+						if fc == 0: end round (6)
+						if fc > 0: start new cycle (3)
+				if amount > 0: get random word from "prompted == false" words
+			5: input false: false_count+1 (code and db), mark word as prompted in "vocab_words", go to (4)
+				input true: true_count+1 (code and db), delete word in "vocab_words", go to (4)
+			6: round finished: get all stats from cycles, ...
+		
+		- make every round cycle based: first cycle all words, second cycle the words you didn't know at first, and so on... until you entered every word correct
+		- layout:
+			- timer which increases whilst the round proceeds
+			- label: question (get a random word from the amount of words which has been selected before, which has not been questioned yet)
+			- input: answer (translate the word from label to your selected language)
+			- button: submit (send answer to servlet and check for errors)
+		- stats: 
+			correctness (therefore also: total number of false/true inputs), 
+			time -> therefore add timer and display it on every round
+			total number of cycles, 
+			avg. cycles per round
 	
 Database Stuff:
 
@@ -130,9 +130,7 @@ Database Stuff:
 			worst_list (the list you should learn the most, because you had lots of false inputs)
 		)
 		
-		
-		
-Inser into web.xml:
+Insert into web.xml for utf-8 support:
 
     <filter>
         <filter-name>setCharacterEncodingFilter</filter-name>
@@ -148,19 +146,20 @@ Inser into web.xml:
 		<filter-name>setCharacterEncodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-		
-Database Init Script:
+
+db_init.sql :
 			
 	drop database vocabtrainer;
 	create database vocabtrainer;
 	use vocabtrainer;
 
 	CREATE TABLE lists(
-		list_id INT UNSIGNED NOT NULL PRIMARY KEY,
+		list_id INT UNSIGNED NOT NULL,
 		description VARCHAR(180),
 		lang1 VARCHAR(60) NOT NULL,
-		lang2 VARCHAR(60) NOT NULL
-		);
+		lang2 VARCHAR(60) NOT NULL,
+		PRIMARY KEY (list_id)
+	);
 		
 	CREATE TABLE words(
 		word_id INT UNSIGNED NOT NULL,
@@ -169,7 +168,7 @@ Database Init Script:
 		word_lang2 VARCHAR(100) NOT NULL,
 		PRIMARY KEY (word_id),
 		FOREIGN KEY (list_id) REFERENCES lists(list_id)
-		);	
+	);	
 		
 	CREATE TABLE rounds(
 		round_id INT UNSIGNED NOT NULL,

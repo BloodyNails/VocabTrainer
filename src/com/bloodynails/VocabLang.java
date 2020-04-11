@@ -17,7 +17,6 @@ public enum VocabLang {
 	}
 	
 	public static VocabLang parseLang(String s) {
-		
 		switch (s.toLowerCase()) {
 			case "german":
 				return GERMAN;

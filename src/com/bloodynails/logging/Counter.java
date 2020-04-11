@@ -10,11 +10,9 @@ public class Counter {
 			instance = new Counter();
 		}
 		else if (instance == null && isSaved){
-			// TODO: load instance from DB
-			// setCounter(c)
-		}
-		else {
-			return instance;
+			// TODO: set c 
+			int c = 0;
+			instance = new Counter(c);
 		}
 		return instance;
 	}
@@ -23,8 +21,8 @@ public class Counter {
 		count = 0;
 	}
 	
-	private void setCounter(int count) {
-		Counter.count = count;
+	private Counter(int c) {
+		count = c;
 	}
 	
 	private int getCount() {
@@ -42,5 +40,9 @@ public class Counter {
 	public boolean save() {
 		// TODO save instance to db;
 		return false;
+	}
+	
+	public void reset() {
+		instance = new Counter();
 	}
 }

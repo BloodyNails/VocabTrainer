@@ -24,6 +24,8 @@ public class FileManager {
 			s += line;
 		}
 		
+		scanner.close();
+		
 		return s;
 	}
 	

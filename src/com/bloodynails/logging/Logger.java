@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 public class Logger {
 	private static Counter counter = Counter.getInstance();
 	private static LocalDateTime date;
+	// TODO: pattern is not printed as it is declared here
 	private static final String datePattern = "yyyy.MM.dd HH:mm:ss";
 	
 	public static void log(String s) {
@@ -20,8 +21,7 @@ public class Logger {
 	}
 	
 	// TODO:
-	// write s to file and save counter
-	// add timestamp
+	// write s to file and reset counter after every new file
 	private static void print(MessageType t, String s) {
 		date = LocalDateTime.now();
 		date.format(DateTimeFormatter.ofPattern(datePattern));
@@ -32,7 +32,7 @@ public class Logger {
 		String[] lines = s.split("\n");
 
 		for(Integer i = 0; i < lines.length; i++) {
-			print(t, "x."+i.toString() + ": " +lines[i]);
+			print(t, i.toString() + ": " +lines[i]);
 		}
 	}
 }

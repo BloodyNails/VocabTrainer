@@ -9,6 +9,7 @@ import com.bloodynails.database.DBObjType;
 public class VocabRound extends DBObj {
 	// TODO: check if languages are compatible with selected lists
 	// also make it so only lists of same languages can be selected
+	// maybe forget about that above and enable mixed rounds with different langs?
 
 	private boolean completed = false; // was the round completed the last time the user interacted with it
 	private LinkedList<Long> listIDs = new LinkedList<Long>(); // IDs of all lists which are selected before creating
