@@ -2,20 +2,14 @@ package com.bloodynails.servlets;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bloodynails.VocabLang;
-import com.bloodynails.VocabList;
-import com.bloodynails.VocabPair;
 import com.bloodynails.VocabRound;
 import com.bloodynails.database.DBManager;
-import com.bloodynails.logging.Logger;
 
 /**
  * Servlet implementation class Vocabulary
@@ -42,7 +36,7 @@ public class Vocabulary extends HttpServlet {
 		request.setAttribute("rounds", rounds);
 		request.setAttribute("roundCount", rounds.size());
 		
-		request.getRequestDispatcher("/Rounds.jsp").forward(request, response);
+		request.getRequestDispatcher("/Vocabulary.jsp").forward(request, response);
 		
 	}
 

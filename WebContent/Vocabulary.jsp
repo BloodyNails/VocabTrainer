@@ -13,47 +13,76 @@
 </head>
 <body>
 	<h1>VocabTrainer -> Training -> Vocabulary</h1>
+	<h3>Round count: ${roundCount}</h3>
 
 	<form action="/VocabTrainer/Training" method="GET">
 		<input class="reg-btn" type="submit" value="BACK">
 	</form>
 
-	<c:choose>
-		<c:when test="${!emptyLists}">
-			<h3>list count: ${listCount}</h3>
-			<h3>select the lists which will be prompted:</h3>
+	<br>
 
-			<form class="form" action="" method="POST">
-				<table>
-					<thead>
-						<tr>
-							<th class="small-col">ID</th>
-							<th>description</th>
-							<th>first language</th>
-							<th>second language</th>
-							<th>select</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach var="list" items="${lists}" varStatus="loop">
-							<tr class="${loop.index % 2 == 0 ? 'even' : 'odd'}">
-								<td>${list.ID}</td>
-								<td>${list.description}</td>
-								<td>${list.lang1.toString()}</td>
-								<td>${list.lang2.toString()}</td>
-								<td><input type="checkbox" name="select" value="${list.ID}"></td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-				<input type="submit" name="submit">
-			</form>
+	<table>
+		<thead>
+			<tr>
+				<th class="small-col">ID</th>
+				<th>completed</th>
+				<th>lists</th>
+				<th>first language</th>
+				<th>second language</th>
+				<th>prompted language</th>
+				<th>time in s</th>
+				<th>correct answers</th>
+				<th>incorrect answers</th>
+				<th>incorrect / correct ratio</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach var="round" items="${rounds}" varStatus="loop">
+				<tr class="${loop.index % 2 == 0 ? 'even' : 'odd'}">
+					<td>${round.ID}</td>
+					<td>${round.completed}</td>
+					<td>
+						<table>
+							<c:forEach var="description"
+								items="${round.getListDescriptions()}">
+								<tr>
+									<td>${description}</td>
+								</tr>
+							</c:forEach>
+						</table>
+					</td>
+					<td>${round.languages.getLang1().toString()}</td>
+					<td>${round.languages.getLang2().toString()}</td>
+					<td>${round.promptedLang.toString()}</td>
+					<td>${round.time}</td>
+					<td>${round.trueCount}</td>
+					<td>${round.falseCount}</td>
+					<td>${round.tfRatio}</td>
+					<td>
+						<form class="form" action="" method="POST">
+							<input type="hidden" value="${round.ID}" name="roundID">
+							<input class="table-btn" type="submit" value="continue">
+						</form>
+					</td>
+					<td>
+						<form class="form" action="" method="POST">
+							<input type="hidden" value="${round.ID}" name="roundID">
+							<input class="table-btn, delete-input" type="submit"
+								value="delete">
+						</form>
+					</td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
 
-		</c:when>
-		<c:otherwise>
-			<h3>no lists found</h3>
-		</c:otherwise>
-	</c:choose>
+	<br>
+
+	<div class="input-div">
+		<form action="Round" method="POST">
+			<input class="form-btn" type="submit" value="CREATE NEW ROUND">
+		</form>
+	</div>
 
 
 </body>

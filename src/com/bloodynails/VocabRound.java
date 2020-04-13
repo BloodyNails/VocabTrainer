@@ -73,13 +73,26 @@ public class VocabRound extends DBObj {
 
 	public String listIDsToString() {
 		String s = "";
-		if (cycleIDs != null && listIDs.size() > 0) {
+		if (listIDs != null && listIDs.size() > 0) {
 			for (int i = 0; i < listIDs.size(); i++) {
 				if (i > 0) s += ",";
 				s += listIDs.get(i).toString();
 			}
 		}
 		return s;
+	}
+
+	public String[] getListDescriptions() {
+		if(listIDs != null) {
+			String[] s = new String[listIDs.size()];
+			if (listIDs != null && listIDs.size() > 0) {
+				for (int i = 0; i < listIDs.size(); i++) {
+					s[i] = DBManager.getListByID(listIDs.get(i)).getDescription();
+				}
+			}
+			return s;
+		}
+		else return null;
 	}
 
 	public String cycleIDsToString() {

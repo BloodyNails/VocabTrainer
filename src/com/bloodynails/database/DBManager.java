@@ -199,11 +199,12 @@ public class DBManager {
 
 	private static LinkedList<Long> parseIDs(String s) {
 		LinkedList<Long> IDs = new LinkedList<Long>();
-		if(s != null && !s.isEmpty()) {
+		if (s != null && !s.isEmpty()) {
 			String[] stringIDs = s.split(",");
-
-			for (int i = 0; i < stringIDs.length; i++) {
-				IDs.add(Long.parseLong(stringIDs[i]));
+			for(int i = 0; i < stringIDs.length; i++) {
+				if(!IDs.contains(Long.parseLong(stringIDs[i]))) {
+					IDs.add(Long.parseLong(stringIDs[i]));
+				}
 			}
 		}
 		return IDs;

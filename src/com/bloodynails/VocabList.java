@@ -16,7 +16,6 @@ public class VocabList extends DBObj{
 		this.description = description;
 		this.languages = languages;
 		words = new LinkedList<VocabWord>();
-		fillWordsFromDB();
 	}
 	
 	public VocabList(Long listID, String description, VocabPair languages) {
@@ -24,7 +23,6 @@ public class VocabList extends DBObj{
 		this.description = description;
 		this.languages = languages;
 		words = new LinkedList<VocabWord>();
-		fillWordsFromDB();
 	}
 	
 	@Override

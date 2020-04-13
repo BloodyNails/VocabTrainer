@@ -27,17 +27,11 @@ table td, table th {
 	width: 100%;
 }
 
-.table-btn {
-	width: 100%;
-	height: 100%;
-	border: none;
-}
-
 .small-col {
 	width: 30px;
 }
 
-.form, .delete-input {
+.form, .delete-input, .table-btn {
 	width: 100%;
 	height: 100%;
 	border: none;
