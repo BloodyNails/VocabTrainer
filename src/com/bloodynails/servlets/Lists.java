@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bloodynails.VocabLang;
 import com.bloodynails.VocabList;
 import com.bloodynails.VocabPair;
 import com.bloodynails.database.DBManager;
@@ -30,9 +31,9 @@ public class Lists extends HttpServlet {
 			if(lists != null && lists.size() > 0) {
 				request.setAttribute("listCount", lists.size());		
 				request.setAttribute("lists", lists);
+				request.setAttribute("langs", VocabLang.values());
 			}
 		}
-		// TODO: add available languages here instead of hardcoding them into html
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		request.getRequestDispatcher("/Lists.jsp").forward(request, response);	
@@ -55,7 +56,7 @@ public class Lists extends HttpServlet {
 			String lang2 = (String) request.getParameter("lang2");
 			if(description != null) {
 				if(!description.isEmpty()) {
-					VocabPair langs = VocabPair.parseLangs(lang1, lang2);
+					VocabPair langs = new VocabPair(VocabLang.parseLang(lang1), VocabLang.parseLang(lang2));
 					if(langs.isValid()) {
 						DBManager.save(new VocabList(description, langs));
 					}

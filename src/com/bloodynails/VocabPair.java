@@ -39,42 +39,13 @@ public class VocabPair {
 	}
 	
 	public static VocabPair parseLangs(String lang1, String lang2) {
-		switch (lang1.toLowerCase()) {
-			case "german":
-				switch (lang2.toLowerCase()) {
-					case "german":
-						return new VocabPair(VocabLang.GERMAN, VocabLang.GERMAN);
-					case "russian":
-						return new VocabPair(VocabLang.GERMAN, VocabLang.RUSSIAN);
-					case "english":
-						return new VocabPair(VocabLang.GERMAN, VocabLang.ENGLISH);
-					default:
-						return new VocabPair();
-				}
-			case "english":
-				switch (lang2.toLowerCase()) {
-					case "english":
-						return new VocabPair(VocabLang.ENGLISH, VocabLang.ENGLISH);
-					case "german":
-						return new VocabPair(VocabLang.ENGLISH, VocabLang.GERMAN);
-					case "russian":
-						return new VocabPair(VocabLang.ENGLISH, VocabLang.RUSSIAN);
-					default:
-						return new VocabPair();
-				}
-			case "russian":
-				switch (lang2.toLowerCase()) {
-					case "russian":
-						return new VocabPair(VocabLang.RUSSIAN, VocabLang.RUSSIAN);
-					case "german":
-						return new VocabPair(VocabLang.RUSSIAN, VocabLang.GERMAN);
-					case "english":
-						return new VocabPair(VocabLang.RUSSIAN, VocabLang.ENGLISH);
-					default:
-						return new VocabPair();
-				}
-			default:
-				return new VocabPair();
+		VocabLang vl1 = VocabLang.parseLang(lang1);
+		VocabLang vl2 = VocabLang.parseLang(lang2);
+		if(vl1 != null && vl2 != null) {
+			return new VocabPair(vl1, vl2);
+		}
+		else {
+			return new VocabPair();
 		}
 	}
 }

@@ -60,17 +60,17 @@
 	    	<input class="form-btn" type="submit" value="SUBMIT">
     	</form>
     	
-	    	<select name="lang1" form="newlist">
-	    		<option value="German">German</option>
-	    		<option value="English">English</option>
-	    		<option value="Russian">Russian</option>
-	    	</select>
+    	<select name="lang1" form="newlist">
+	    	<c:forEach var="lang" items="${langs}">
+	    		<option value="${lang.toString()}">${lang.toString()}</option>
+	    	</c:forEach>
+    	</select>
 	    
 	    <select name="lang2" form="newlist">
-	    		<option value="German">German</option>
-	    		<option value="English">English</option>
-	    		<option value="Russian">Russian</option>
-	    	</select>
+	    	<c:forEach var="lang" items="${langs}">
+				<option value="${lang.toString()}">${lang.toString()}</option>
+			</c:forEach>
+		</select>
     </div>
     
     

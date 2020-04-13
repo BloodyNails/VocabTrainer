@@ -51,7 +51,7 @@ public class DBManager {
 					query = "INSERT INTO lists (list_id, description, lang1, lang2) " + "VALUES ('"
 							+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1().toString()
 							+ "', '" + l.getLang2().toString() + "')";
-					System.out.println(query);
+					Logger.log(query);
 					break;
 				case WORD:
 					VocabWord w = (VocabWord) dbObj;
@@ -59,6 +59,7 @@ public class DBManager {
 					query = "INSERT INTO words (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
 							+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
 							+ "', N'" + w.getWordLang2() + "')";
+					Logger.log(query);
 					break;
 				case ROUND:
 					VocabRound r = (VocabRound) dbObj;
@@ -294,7 +295,7 @@ public class DBManager {
 		final String query = "DELETE FROM words WHERE word_id = " + wordID;
 		try {
 			s = connection.createStatement();
-			System.out.println("Deleting: WORD: #" + wordID);
+			Logger.log("Deleting: WORD: #" + wordID);
 			return s.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -317,7 +318,7 @@ public class DBManager {
 
 		try {
 			s = connection.createStatement();
-			System.out.println("Deleting LIST: #" + list.getID() + ", " + list.getDescription());
+			Logger.log("Deleting LIST: #" + list.getID().toString() + ", " + list.getDescription());
 			return s.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();

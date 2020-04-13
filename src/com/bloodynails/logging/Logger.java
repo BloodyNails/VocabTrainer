@@ -1,32 +1,35 @@
 package com.bloodynails.logging;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Logger {
-	public static void printRequestMap(HttpServletRequest request) {
-		print("request Map: ");
-		Map<String, String[]> paraMap = request.getParameterMap();
-		for(Map.Entry<String, String[]> entry : paraMap.entrySet()) {
-			print(" key:");
-			print("   " + entry.getKey());
-			print(" values:");
-			for(int i = 0; i < entry.getValue().length; i++) {
-				print("   " + entry.getValue()[i]);
-			}
-		}
-	}
+	// TODO: pattern is not printed as it is declared here
+	private static final String datePattern = "yyyy.MM.dd'-'HH:mm:ss";
 	
 	public static void log(String s) {
-		print(s);
+		log(MessageType.INFO, s);
 	}
 	
-	private static void print(String s) {
-		System.out.println("[VocabLogger]: " + s);
-		// TODO:
-		// add timestamp
-		// add actual logging to log file
-		// add problem serverity: [INFO] / [WARNING] / [ERROR]
+	public static void log(MessageType t, String s) {
+		if(s.contains("\n"))
+			multiLinePrint(t,s);
+		else
+			print(t,s);
+	}
+	
+	// TODO:
+	// write s to file and reset counter after every new file
+	private static void print(MessageType t, String s) {
+		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern(datePattern)).toString();
+		System.out.println("["+dateString+"]["+t.toString()+"]: " + s);
+	}
+	
+	private static void multiLinePrint(MessageType t, String s) {
+		String[] lines = s.split("\n");
+
+		for(Integer i = 0; i < lines.length; i++) {
+			print(t, i.toString() + ": " +lines[i]);
+		}
 	}
 }
