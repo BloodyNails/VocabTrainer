@@ -35,6 +35,10 @@ public class VocabList extends DBObj{
 		return description;
 	}
 	
+	public VocabPair getLangs() {
+		return this.languages;
+	}
+	
 	public VocabLang getLang1() {
 		return languages.getLang1();
 	}

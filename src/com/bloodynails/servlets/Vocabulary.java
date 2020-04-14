@@ -33,6 +33,10 @@ public class Vocabulary extends HttpServlet {
 		//  view stats
 		LinkedList<VocabRound> rounds = DBManager.getAllRounds();
 		
+		for(int i = 0; i < rounds.size(); i++) {
+			DBManager.save(rounds.get(i).removeWrongLangs());
+		}
+		
 		request.setAttribute("rounds", rounds);
 		request.setAttribute("roundCount", rounds.size());
 		

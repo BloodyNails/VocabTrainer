@@ -48,4 +48,17 @@ public class VocabPair {
 			return new VocabPair();
 		}
 	}
+	
+	public boolean compareTo(VocabPair vp) {
+		if(lang1 == vp.getLang1() && lang2 == vp.getLang2()) {
+			return true;
+		}
+		else if(lang1 == vp.getLang2() && lang2 == vp.getLang1()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+				
+	}
 }

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Logger {
-	// TODO: pattern is not printed as it is declared here
 	private static final String datePattern = "yyyy.MM.dd'-'HH:mm:ss";
 	
 	public static void log(String s) {

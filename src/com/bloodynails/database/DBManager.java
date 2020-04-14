@@ -40,6 +40,7 @@ public class DBManager {
 		}
 	}
 
+	// TODO: rework this (maybe split in several functions SaveRound, SaveList, ...)
 	public static boolean save(DBObj dbObj) {
 		String query;
 
@@ -63,14 +64,23 @@ public class DBManager {
 					break;
 				case ROUND:
 					VocabRound r = (VocabRound) dbObj;
-					Logger.log("Saving: " + r.toString());
-					query = "INSERT INTO rounds (round_id, completed, list_ids, cycle_ids, lang1, lang2, prompted_lang, time, true_count, false_count, tf_ratio) "
-							+ "VALUES ('" + r.getID() + "', '" + r.isCompletedInt() + "', '" + r.listIDsToString()
-							+ "', '" + r.cycleIDsToString() + "', '" + r.getLanguages().getLang1().toString() + "', '"
-							+ r.getLanguages().getLang2().toString() + "', '" + r.getPromptedLang().toString() + "', '"
-							+ r.getTime() + "', '" + r.getTrueCount() + "', '" + r.getFalseCount() + "', '"
-							+ r.getTfRatio() + "')";
-					Logger.log(query);
+					if(getRoundByID(r.getID()) != null) {
+						// update
+						Logger.log("Updating Round: " + r.toString());
+						return false;
+						
+					}
+					else {
+						// save
+						Logger.log("Saving: " + r.toString());
+						query = "INSERT INTO rounds (round_id, completed, list_ids, cycle_ids, lang1, lang2, prompted_lang, time, true_count, false_count, tf_ratio) "
+								+ "VALUES ('" + r.getID() + "', '" + r.isCompletedInt() + "', '" + r.listIDsToString()
+								+ "', '" + r.cycleIDsToString() + "', '" + r.getLanguages().getLang1().toString() + "', '"
+								+ r.getLanguages().getLang2().toString() + "', '" + r.getPromptedLang().toString() + "', '"
+								+ r.getTime() + "', '" + r.getTrueCount() + "', '" + r.getFalseCount() + "', '"
+								+ r.getTfRatio() + "')";
+						Logger.log(query);
+					}
 					break;
 				default:
 					query = "";
@@ -309,21 +319,23 @@ public class DBManager {
 
 		if (list != null) {
 			LinkedList<VocabWord> words = list.getWords();
-			if (words != null && words.size() > 0) {
-				for (int i = 0; i < words.size(); i++) {
-					deleteWordByID(words.get(i).getID());
+			if (words != null ) {
+				if(words.size() > 0) {
+					for (int i = 0; i < words.size(); i++) {
+						deleteWordByID(words.get(i).getID());
+					}
 				}
 			}
+			try {
+				s = connection.createStatement();
+				Logger.log("Deleting LIST: #" + list.getID().toString() + ", " + list.getDescription());
+				return s.execute(query);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
-
-		try {
-			s = connection.createStatement();
-			Logger.log("Deleting LIST: #" + list.getID().toString() + ", " + list.getDescription());
-			return s.execute(query);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		return false;
 	}
 
 }

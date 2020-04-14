@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import com.bloodynails.database.DBManager;
 import com.bloodynails.database.DBObj;
 import com.bloodynails.database.DBObjType;
+import com.bloodynails.logging.Logger;
+import com.bloodynails.logging.MessageType;
 
 public class VocabRound extends DBObj {
 	// TODO: check if languages are compatible with selected lists
@@ -35,6 +37,7 @@ public class VocabRound extends DBObj {
 		this.trueCount = trueCount;
 		this.falseCount = falseCount;
 		this.tfRatio = tfRatio;
+		removeWrongLangs();
 	}
 
 	public VocabRound(boolean completed, LinkedList<Long> listIDs, LinkedList<Long> cycleIDs, VocabPair languages,
@@ -49,6 +52,7 @@ public class VocabRound extends DBObj {
 		this.trueCount = trueCount;
 		this.falseCount = falseCount;
 		this.tfRatio = tfRatio;
+		removeWrongLangs();
 	}
 
 	@Override
@@ -58,6 +62,21 @@ public class VocabRound extends DBObj {
 				+ languages.getLang2().toString() + "\n" + "promptedLang: " + promptedLang.toString() + "\n" + "time: "
 				+ time + "\n" + "trueCount: " + trueCount + "\n" + "falseCount: " + falseCount + "\n" + "tfRatio :"
 				+ tfRatio;
+	}
+	
+	public VocabRound removeWrongLangs() {
+		for(int i = 0; i < this.listIDs.size(); i++) {
+			if(DBManager.getListByID(listIDs.get(i)) != null) {
+				VocabPair listLangs = DBManager.getListByID(listIDs.get(i)).getLangs();
+				if(!listLangs.compareTo(languages)) {
+					listIDs.remove(i);
+				}
+			}
+			else {
+				Logger.log(MessageType.WARNING, "List specified inside round is not found DB");
+			}
+		}
+		return this;
 	}
 
 	public boolean isCompleted() {
@@ -88,7 +107,14 @@ public class VocabRound extends DBObj {
 			String[] s = new String[listIDs.size()];
 			if (listIDs != null && listIDs.size() > 0) {
 				for (int i = 0; i < listIDs.size(); i++) {
-					s[i] = DBManager.getListByID(listIDs.get(i)).getDescription();
+					if(DBManager.getListByID(listIDs.get(i)) == null) {
+						Logger.log(MessageType.WARNING, "List specified inside round is not found DB");
+						s[i] = "List #"+listIDs.get(i).toString()+" not found";
+					}
+					else {
+						s[i] = DBManager.getListByID(listIDs.get(i)).getDescription();
+					}
+						
 				}
 			}
 			return s;

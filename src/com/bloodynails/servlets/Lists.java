@@ -13,6 +13,8 @@ import com.bloodynails.VocabLang;
 import com.bloodynails.VocabList;
 import com.bloodynails.VocabPair;
 import com.bloodynails.database.DBManager;
+import com.bloodynails.logging.Logger;
+import com.bloodynails.logging.MessageType;
 
 /**
  * Servlet implementation class Lists
@@ -31,9 +33,9 @@ public class Lists extends HttpServlet {
 			if(lists != null && lists.size() > 0) {
 				request.setAttribute("listCount", lists.size());		
 				request.setAttribute("lists", lists);
-				request.setAttribute("langs", VocabLang.values());
 			}
 		}
+		request.setAttribute("langs", VocabLang.values());
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		request.getRequestDispatcher("/Lists.jsp").forward(request, response);	
@@ -62,16 +64,18 @@ public class Lists extends HttpServlet {
 					}
 					else {
 						// TODO: html warning (langs invalid either because lang1 == lang2 or because of other reasons)
-						// add this to logger
+						Logger.log(MessageType.WARNING, "Languages invalid on creating a new list");
 					}
 				}
 				else {
 					// TODO: html warning (description empty)
-					// add this to logger
+					Logger.log(MessageType.WARNING, "Description is empty on creating a new list");
 				}
 			}
 			else {
-				throw new NullPointerException("description should not be null when posting new list form");
+				String e = "Description should not be null on creating a new list";
+				Logger.log(MessageType.WARNING, e);
+				throw new NullPointerException(e);
 			}
 		}
 		
