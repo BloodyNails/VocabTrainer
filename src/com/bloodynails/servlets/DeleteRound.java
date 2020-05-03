@@ -7,19 +7,30 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(com.bloodynails.Config.internalTrainingPath)
-public class Training extends HttpServlet {
+import com.bloodynails.Config;
+import com.bloodynails.database.DBManager;
+import com.bloodynails.logging.Logger;
+
+@WebServlet(com.bloodynails.Config.internalDeleteRoundPath)
+public class DeleteRound extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-    public Training() {
+
+    public DeleteRound() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("/Training.jsp").forward(request, response);
+		response.sendRedirect(Config.externalVocabularyPath);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		final Long roundID = Long.parseLong(request.getParameter("roundID"));
+		if(DBManager.deleteRoundByID(roundID)) {
+			Logger.log("success");
+		}
+		else {
+			Logger.log("round could not be deleted");
+		}
 		doGet(request, response);
 	}
 

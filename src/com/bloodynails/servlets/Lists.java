@@ -19,7 +19,7 @@ import com.bloodynails.logging.MessageType;
 /**
  * Servlet implementation class Lists
  */
-@WebServlet("/Lists")
+@WebServlet(com.bloodynails.Config.internalListsPath)
 public class Lists extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	

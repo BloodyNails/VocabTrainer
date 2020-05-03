@@ -12,10 +12,10 @@ TODO:
 		
 	- remove questionmark in url after forwarding request, might cause errors later
 	- vocabulary training servlet
-		- create missing tables in db
 		- training servlet itself
-		- add datatypes (VocabRound, VocabCycle)
-		- make datatypes compatible with db (CRUD)
+		- complete VocabCycle
+		- implement updating the DB
+		- implemente Cycle to DB 
 		- add method which gets executed when leaving/closing browser
 			- stop timer
 			- save progress to db
@@ -184,6 +184,10 @@ db_init.sql :
 		tf_ratio FLOAT NOT NULL,
 		PRIMARY KEY (round_id)
 	);
+	
+	test round:
+		INSERT INTO rounds (round_id, completed, list_ids, cycle_ids, lang1, lang2, prompted_lang, time, true_count, false_count, tf_ratio) 
+		VALUES (3, 0, '0,1', NULL, 'German', 'German', 'German', 0, 0, 0, 1);
 	
 	CREATE TABLE cycles (
 		cycle_id INT UNSIGNED NOT NULL,

@@ -14,7 +14,7 @@ import com.bloodynails.database.DBManager;
 /**
  * Servlet implementation class Vocabulary
  */
-@WebServlet("/Training/Vocabulary")
+@WebServlet(com.bloodynails.Config.internalVocabularyPath)
 public class Vocabulary extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -33,9 +33,7 @@ public class Vocabulary extends HttpServlet {
 		//  view stats
 		LinkedList<VocabRound> rounds = DBManager.getAllRounds();
 		
-		for(int i = 0; i < rounds.size(); i++) {
-			DBManager.save(rounds.get(i).removeWrongLangs());
-		}
+		// TODO IMPORTANT Don't forget to call removeWrongLangs() after creating a round
 		
 		request.setAttribute("rounds", rounds);
 		request.setAttribute("roundCount", rounds.size());

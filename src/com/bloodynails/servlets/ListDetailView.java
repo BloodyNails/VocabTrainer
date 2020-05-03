@@ -16,7 +16,7 @@ import com.bloodynails.database.DBManager;
 /**
  * Servlet implementation class ListDetailView
  */
-@WebServlet("/Lists/View")
+@WebServlet(com.bloodynails.Config.internalListsDetailViewPath)
 public class ListDetailView extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	

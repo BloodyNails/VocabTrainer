@@ -16,7 +16,7 @@ import com.bloodynails.logging.Logger;
 
 public class DBManager {
 
-	public static Connection connection = getConnection();
+	public static final Connection connection = getConnection();
 
 	private static Statement s;
 
@@ -39,62 +39,62 @@ public class DBManager {
 			return null;
 		}
 	}
-
-	// TODO: rework this (maybe split in several functions SaveRound, SaveList, ...)
-	public static boolean save(DBObj dbObj) {
-		String query;
-
-		if (dbObj != null) {
-			switch (dbObj.getType()) {
-				case LIST:
-					VocabList l = (VocabList) dbObj;
-					Logger.log("Saving: " + l.toString());
-					query = "INSERT INTO lists (list_id, description, lang1, lang2) " + "VALUES ('"
-							+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1().toString()
-							+ "', '" + l.getLang2().toString() + "')";
-					Logger.log(query);
-					break;
-				case WORD:
-					VocabWord w = (VocabWord) dbObj;
-					Logger.log("Saving: " + w.toString());
-					query = "INSERT INTO words (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
-							+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
-							+ "', N'" + w.getWordLang2() + "')";
-					Logger.log(query);
-					break;
-				case ROUND:
-					VocabRound r = (VocabRound) dbObj;
-					if(getRoundByID(r.getID()) != null) {
-						// update
-						Logger.log("Updating Round: " + r.toString());
-						return false;
-						
-					}
-					else {
-						// save
-						Logger.log("Saving: " + r.toString());
-						query = "INSERT INTO rounds (round_id, completed, list_ids, cycle_ids, lang1, lang2, prompted_lang, time, true_count, false_count, tf_ratio) "
-								+ "VALUES ('" + r.getID() + "', '" + r.isCompletedInt() + "', '" + r.listIDsToString()
-								+ "', '" + r.cycleIDsToString() + "', '" + r.getLanguages().getLang1().toString() + "', '"
-								+ r.getLanguages().getLang2().toString() + "', '" + r.getPromptedLang().toString() + "', '"
-								+ r.getTime() + "', '" + r.getTrueCount() + "', '" + r.getFalseCount() + "', '"
-								+ r.getTfRatio() + "')";
-						Logger.log(query);
-					}
-					break;
-				default:
-					query = "";
-					break;
-			}
-			try {
-				s = connection.createStatement();
-				return s.execute(query);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return false;
-			}
-
-		} else {
+	
+	public static boolean save(VocabWord w) {
+		if(getWordByID(w.getID()) != null) {
+			Logger.log("Updating: " + w.toString());
+			return false;
+		}
+		else {
+			Logger.log("Saving: " + w.toString());
+			final String query = "INSERT INTO words (word_id, list_id, word_lang1, word_lang2) " + "VALUES ('"
+					+ w.getID().toString() + "', '" + w.getListID().toString() + "', N'" + w.getWordLang1()
+					+ "', N'" + w.getWordLang2() + "')";
+			Logger.log(query);
+			return execute(query);
+		}
+	}
+	
+	public static boolean save(VocabList l) {
+		if(getListByID(l.getID()) != null) {
+			Logger.log("Updating: " + l.toString());
+			return false;
+		}
+		else {
+			Logger.log("Saving: " + l.toString());
+			final String query = "INSERT INTO lists (list_id, description, lang1, lang2) " + "VALUES ('"
+					+ l.getID().toString() + "', '" + l.getDescription() + "', '" + l.getLang1().toString()
+					+ "', '" + l.getLang2().toString() + "')";
+			Logger.log(query);
+			return execute(query);
+		}
+	}
+	
+	public static boolean save(VocabRound r) {
+		if(getRoundByID(r.getID()) != null) {
+			Logger.log("Updating: " + r.toString());
+			return false;
+		}
+		else {
+			Logger.log("Saving: " + r.toString());
+			final String query = "INSERT INTO rounds (round_id, completed, list_ids, cycle_ids, lang1, lang2, prompted_lang, time, true_count, false_count, tf_ratio) "
+					+ "VALUES ('" + r.getID() + "', '" + r.isCompletedInt() + "', '" + r.listIDsToString()
+					+ "', '" + r.cycleIDsToString() + "', '" + r.getLanguages().getLang1().toString() + "', '"
+					+ r.getLanguages().getLang2().toString() + "', '" + r.getPromptedLang().toString() + "', '"
+					+ r.getTime() + "', '" + r.getTrueCount() + "', '" + r.getFalseCount() + "', '"
+					+ r.getTfRatio() + "')";
+			Logger.log(query);
+			return execute(query); 
+		}
+	}
+	
+	private static boolean execute(String query) {
+		try {
+			s = connection.createStatement();
+			s.execute(query);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -225,7 +225,7 @@ public class DBManager {
 		if (listID != null && listID > -1) {
 			LinkedList<VocabWord> words = new LinkedList<VocabWord>();
 			final String query = "SELECT word_id, word_lang1, word_lang2 FROM vocabtrainer.words WHERE list_id = "
-					+ listID + ";";
+					+ listID.toString() + ";";
 			try {
 				s = connection.createStatement();
 				ResultSet rs = s.executeQuery(query);
@@ -248,7 +248,7 @@ public class DBManager {
 
 	public static VocabList getListByID(Long listID) {
 		if (listID != null && listID > -1) {
-			final String query = "SELECT * FROM lists WHERE list_id = " + listID + ";";
+			final String query = "SELECT * FROM lists WHERE list_id = " + listID.toString() + ";";
 			try {
 				s = connection.createStatement();
 				ResultSet rs = s.executeQuery(query);
@@ -268,10 +268,32 @@ public class DBManager {
 			return null;
 		}
 	}
+	
+	public static VocabWord getWordByID(Long wordID) {
+		if (wordID != null && wordID > -1) {
+			final String query = "SELECT * FROM words WHERE word_id = " + wordID.toString() + ";";
+			try {
+				s = connection.createStatement();
+				ResultSet rs = s.executeQuery(query);
+				if (rs.last()) {
+					Long wID = (Long) rs.getLong("word_id");
+					String word1 = (String) rs.getString("word_lang1");
+					String word2 = (String) rs.getString("word_lang2");
+					return new VocabWord(wID, wordID, word1, word2);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
+			}
+			return null;
+		} else {
+			return null;
+		}
+	}
 
 	public static VocabRound getRoundByID(Long roundID) {
 		if (roundID != null && roundID > -1) {
-			final String query = "SELECT * FROM rounds WHERE round_id = " + roundID + ";";
+			final String query = "SELECT * FROM rounds WHERE round_id = " + roundID.toString() + ";";
 			try {
 				s = connection.createStatement();
 				ResultSet rs = s.executeQuery(query);
@@ -302,19 +324,14 @@ public class DBManager {
 	}
 
 	public static boolean deleteWordByID(Long wordID) {
-		final String query = "DELETE FROM words WHERE word_id = " + wordID;
-		try {
-			s = connection.createStatement();
-			Logger.log("Deleting: WORD: #" + wordID);
-			return s.execute(query);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		final String query = "DELETE FROM words WHERE word_id = " + wordID.toString() + ";";
+		final VocabWord word = getWordByID(wordID);
+		Logger.log("Deleting WORD: " + word.toString());
+		return execute(query);
 	}
 
 	public static boolean deleteListByID(Long listID) {
-		final String query = "DELETE FROM lists WHERE list_id = " + listID;
+		final String query = "DELETE FROM lists WHERE list_id = " + listID.toString() + ";";
 		final VocabList list = getListByID(listID);
 
 		if (list != null) {
@@ -326,16 +343,17 @@ public class DBManager {
 					}
 				}
 			}
-			try {
-				s = connection.createStatement();
-				Logger.log("Deleting LIST: #" + list.getID().toString() + ", " + list.getDescription());
-				return s.execute(query);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return false;
-			}
+			Logger.log("Deleting List: " + list.toString());
+			return execute(query);
 		}
 		return false;
+	}
+	
+	public static boolean deleteRoundByID(Long roundID) {
+		final String query = "DELETE FROM rounds WHERE round_id = " + roundID.toString() + ";";
+		final VocabRound round = getRoundByID(roundID);
+		Logger.log("Deleting ROUND: " + round.toString());
+		return execute(query);
 	}
 
 }

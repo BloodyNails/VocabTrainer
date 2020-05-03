@@ -27,7 +27,7 @@ public class VocabList extends DBObj{
 	
 	@Override
 	public String toString() {
-		return "VocabList:"+"\nlistID: "+ID+"\ndescription"+description+"\nlanguages: "+languages.getLang1().toString()
+		return "VocabList:"+"\nlistID: "+ID+"\ndescription: "+description+"\nlanguages: "+languages.getLang1().toString()
 				+", "+languages.getLang2().toString();
 	}
 	

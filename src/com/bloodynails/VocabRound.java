@@ -60,7 +60,7 @@ public class VocabRound extends DBObj {
 		return "roundID: " + ID + "\n" + "completed: " + completed + "\n" + "listIDs: " + listIDs.toString() + "\n"
 				+ "cycleIDs: " + cycleIDs.toString() + "\n" + "languages: " + languages.getLang1().toString() + ", "
 				+ languages.getLang2().toString() + "\n" + "promptedLang: " + promptedLang.toString() + "\n" + "time: "
-				+ time + "\n" + "trueCount: " + trueCount + "\n" + "falseCount: " + falseCount + "\n" + "tfRatio :"
+				+ time + "\n" + "trueCount: " + trueCount + "\n" + "falseCount: " + falseCount + "\n" + "tfRatio: "
 				+ tfRatio;
 	}
 	

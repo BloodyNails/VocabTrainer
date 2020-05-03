@@ -49,6 +49,12 @@ public class VocabPair {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param vp is the VocabPair you want to compare to
+	 * @return <b>true</b> if the VocabPairs contain the same languages <br>
+	 * <b>false</b> if the VocabPairs do not contain the same languages
+	 */
 	public boolean compareTo(VocabPair vp) {
 		if(lang1 == vp.getLang1() && lang2 == vp.getLang2()) {
 			return true;

@@ -59,13 +59,13 @@
 					<td>${round.falseCount}</td>
 					<td>${round.tfRatio}</td>
 					<td>
-						<form class="form" action="" method="POST">
+						<form class="form" action="/VocabTrainer/Training/Vocabulary/continue" method="POST">
 							<input type="hidden" value="${round.ID}" name="roundID">
 							<input class="table-btn" type="submit" value="continue">
 						</form>
 					</td>
 					<td>
-						<form class="form" action="" method="POST">
+						<form class="form" action="/VocabTrainer/Training/Vocabulary/delete" method="POST">
 							<input type="hidden" value="${round.ID}" name="roundID">
 							<input class="table-btn, delete-input" type="submit"
 								value="delete">
@@ -79,7 +79,7 @@
 	<br>
 
 	<div class="input-div">
-		<form action="Round" method="POST">
+		<form action="/VocabTrainer/Training/Vocabulary/create" method="GET">
 			<input class="form-btn" type="submit" value="CREATE NEW ROUND">
 		</form>
 	</div>
