@@ -4,5 +4,6 @@ public enum DBObjType {
 	LIST,
 	WORD,
 	ROUND,
-	CYCLE
+	CYCLE, 
+	WORDTRAINING
 }

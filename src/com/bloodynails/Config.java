@@ -2,7 +2,7 @@ package com.bloodynails;
 
 public class Config {
 	
-	public static final String homePath = "/VocabTrainer";
+	private static final String homePath = "/VocabTrainer";
 	
 	public static final String internalListsPath = "/Lists";
 	public static final String internalListsDetailViewPath = "/Lists/View";
@@ -21,4 +21,21 @@ public class Config {
 	public static final String externalContinueRoundPath = homePath + internalContinueRoundPath;
 	
 	public static final String logsPath = "";
+	
+	private static final String dbName = "vocabtrainer";
+	
+	public static final String dbTableLists = dbName + "." + "lists";
+	public static final String dbTableWords = dbName + "." + "words";
+	public static final String dbTableRounds = dbName + "." + "rounds";
+	public static final String dbTableCycles = dbName + "." + "cycles";
+	public static final String dbTableTWords = dbName + "." + "twords";
+	
+	// make this secure in the future
+	private static final String dbUrlPrefix = "jdbc:mysql://localhost:3306/vocabtrainer";
+	private static final String dbUrlSuffix = "?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+	public static final String dbUrl = dbUrlPrefix + dbUrlSuffix;
+
+	public static final String dbUser = "brutus";
+	public static final String dbPass = "pass";
+	
 }

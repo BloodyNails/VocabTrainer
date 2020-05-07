@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.bloodynails.Config;
 import com.bloodynails.database.DBManager;
 import com.bloodynails.logging.Logger;
+import com.bloodynails.logging.MessageType;
 
 @WebServlet(com.bloodynails.Config.internalDeleteRoundPath)
 public class DeleteRound extends HttpServlet {
@@ -29,7 +30,7 @@ public class DeleteRound extends HttpServlet {
 			Logger.log("success");
 		}
 		else {
-			Logger.log("round could not be deleted");
+			Logger.log(MessageType.WARNING, "round could not be deleted");
 		}
 		doGet(request, response);
 	}

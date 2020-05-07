@@ -90,6 +90,17 @@ public class VocabRound extends DBObj {
 	public LinkedList<Long> getListIDs() {
 		return listIDs;
 	}
+	
+	public LinkedList<VocabList> getLists() {
+		LinkedList<VocabList> lists = new LinkedList<VocabList>();
+		if(this.listIDs != null && this.listIDs.size() > 0) {
+			for(int i = 0; i < this.listIDs.size(); i++) {
+				VocabList l = DBManager.getListByID(this.listIDs.get(i));
+				lists.add(l);
+			}
+		}
+		return lists;
+	}
 
 	public String listIDsToString() {
 		String s = "";
@@ -136,6 +147,10 @@ public class VocabRound extends DBObj {
 	public LinkedList<Long> getCycleIDs() {
 		return cycleIDs;
 	}
+	
+	public LinkedList<VocabCycle> getCycles() {
+		return DBManager.getCyclesByRoundID(this.ID);
+	}
 
 	public VocabPair getLanguages() {
 		return languages;
@@ -163,6 +178,10 @@ public class VocabRound extends DBObj {
 
 	public void addTime(float time) {
 		this.time += time;
+	}
+	
+	public void addCycleID(Long cycleID) {
+		cycleIDs.add(cycleID);
 	}
 
 }

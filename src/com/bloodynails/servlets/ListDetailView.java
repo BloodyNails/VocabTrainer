@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.bloodynails.VocabList;
 import com.bloodynails.VocabWord;
 import com.bloodynails.database.DBManager;
+import com.bloodynails.logging.Logger;
+import com.bloodynails.logging.MessageType;
 
 /**
  * Servlet implementation class ListDetailView
@@ -47,29 +49,33 @@ public class ListDetailView extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		// DELETE WORD FROM LIST
-		if(request.getParameter("wordID") != null) {
+		if (request.getParameter("wordID") != null) {
 			Long wordID = Long.parseLong(request.getParameter("wordID"));
-			if(wordID != null && wordID > -1) {
-				list.deleteWordByID(wordID);
-				DBManager.deleteWordByID(wordID);
-			}	
+			if (wordID != null && wordID > -1) {
+				if (!DBManager.deleteWordByID(wordID)) {
+					Logger.log(MessageType.WARNING, "word #" + wordID + " could not be deleted");
+				}
+			}
 		}
 		
 		// ADD WORD TO LIST
-			if(request.getParameter("wordLang1") != null && request.getParameter("wordLang2") != null) {
-				String wordLang1 = (String) request.getParameter("wordLang1");
-				String wordLang2 = (String) request.getParameter("wordLang2");
-				if(wordLang1 != null && wordLang2 != null)
-					if(!wordLang1.isEmpty() && !wordLang2.isEmpty())
-						if(list != null) {
-							VocabWord w = new VocabWord(list.getID(), wordLang1, wordLang2);
-							if(list.addWord(w)) {
-								DBManager.save(w); 
+		if (request.getParameter("wordLang1") != null && request.getParameter("wordLang2") != null) {
+			String wordLang1 = (String) request.getParameter("wordLang1");
+			String wordLang2 = (String) request.getParameter("wordLang2");
+			if (wordLang1 != null && wordLang2 != null) {
+				if (!wordLang1.isEmpty() && !wordLang2.isEmpty()) {
+					if (list != null) {
+						VocabWord w = new VocabWord(list.getID(), wordLang1, wordLang2);
+						if (w != null) {
+							if (!DBManager.save(w)) {
+								Logger.log(MessageType.WARNING, "word: " + w.toString() + " could not be saved");
 							}
-							
 						}
-							
+					}
+				}
+
 			}
+		}
 		
 		doGet(request, response);
 	}

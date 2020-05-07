@@ -27,6 +27,7 @@
 				<th class="small-col">ID</th>
 				<th>completed</th>
 				<th>lists</th>
+				<th class="small-col">cycle count</th>
 				<th>first language</th>
 				<th>second language</th>
 				<th>prompted language</th>
@@ -34,6 +35,8 @@
 				<th>correct answers</th>
 				<th>incorrect answers</th>
 				<th>incorrect / correct ratio</th>
+				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -51,6 +54,7 @@
 							</c:forEach>
 						</table>
 					</td>
+					<td>${round.getCycleIDs().size()}</td>
 					<td>${round.languages.getLang1().toString()}</td>
 					<td>${round.languages.getLang2().toString()}</td>
 					<td>${round.promptedLang.toString()}</td>
@@ -59,10 +63,24 @@
 					<td>${round.falseCount}</td>
 					<td>${round.tfRatio}</td>
 					<td>
-						<form class="form" action="/VocabTrainer/Training/Vocabulary/continue" method="POST">
-							<input type="hidden" value="${round.ID}" name="roundID">
-							<input class="table-btn" type="submit" value="continue">
-						</form>
+						<c:choose>
+							<c:when test="${round.getCycleIDs().size() > 0}">
+								<form class="form"
+									action="/VocabTrainer/Training/Vocabulary/continue"
+									method="POST">
+									<input type="hidden" value="${round.ID}" name="roundID">
+									<input class="table-btn" type="submit" value="continue">
+								</form>
+							</c:when>
+							<c:otherwise>
+								<form class="form"
+									action="/VocabTrainer/Training/Vocabulary/continue"
+									method="POST">
+									<input type="hidden" value="${round.ID}" name="roundID">
+									<input class="table-btn" type="submit" value="start">
+								</form>
+							</c:otherwise>
+						</c:choose>
 					</td>
 					<td>
 						<form class="form" action="/VocabTrainer/Training/Vocabulary/delete" method="POST">

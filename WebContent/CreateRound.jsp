@@ -44,7 +44,7 @@
 							<td>${list.description}</td>
 							<td>${list.lang1.toString()}</td>
 							<td>${list.lang2.toString()}</td>
-							<td >
+							<td>
 								<input type="checkbox" name="checkbox-${list.ID}">
 							</td>
 						</tr>
