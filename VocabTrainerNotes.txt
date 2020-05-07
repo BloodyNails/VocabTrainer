@@ -180,7 +180,7 @@ db_init.sql :
 	CREATE TABLE rounds(
 		round_id INT UNSIGNED NOT NULL,
 		completed boolean NOT NULL,
-		cycle_ids VARCHAR(100),
+		list_ids VARCHAR(100) NOT NULL,
 		lang1 VARCHAR(100) NOT NULL,
 		lang2 VARCHAR(100) NOT NULL,
 		prompted_lang VARCHAR(100) NOT NULL,
@@ -228,4 +228,4 @@ db_init.sql :
 	INSERT INTO words (word_id, list_id, word_lang1, word_lang2) VALUES ('4', '999', N'Bruder', N'брат');
 	INSERT INTO words (word_id, list_id, word_lang1, word_lang2) VALUES ('5', '999', N'Schwester', N'сестра́');
 	
-	INSERT INTO rounds (round_id, completed, list_ids, cycle_ids, lang1, lang2, prompted_lang, time, true_count, false_count, tf_ratio) VALUES ('0', '0', '999', '', 'German', 'Russian', 'German', '0.0', '0', '0', '1.0');
+	INSERT INTO rounds (round_id, completed, list_ids, lang1, lang2, prompted_lang, time, true_count, false_count, tf_ratio) VALUES ('0', '0', '999', 'German', 'Russian', 'German', '0.0', '0', '0', '1.0');
