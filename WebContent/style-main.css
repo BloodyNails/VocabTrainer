@@ -1,62 +1,85 @@
-* {
-	font-family: 'Roboto', sans-serif;	
-}
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300&display=swap');
+/* theme color: https://www.colorhexa.com/fffdd0 */
+
 
 body {
-	background: rgb(74,0,64);
-	background: linear-gradient(90deg, rgba(74,0,64,1) 0%, rgba(94,0,0,1) 100%);
-	color: white;
+	background: #fffdd0;
+	color: black;
+	font-size: 18px;
+}
+
+a {
+	font-weight: 700;
+	color: darkred;
+}
+
+a:hover {
+	color: orange;
+}
+
+.container, .container-wide {
+	font-family: 'DM Mono', monospace;
+	font-weight: 200;
+	
+	padding: 0.5em 1em 0.5em 1em;
+	margin: 1em auto 1em auto;
+	width: 90%;
+	max-width: 720px;
+	
+	background: #efeee0;
+	border: 1px dotted black;
+}
+
+.container-wide {
+	max-width: 90%;
+}
+
+input[type=button], input[type=submit] {
+	margin: 0.5em 0.2;
+	outline: none;
+	background: #fffba9;
+}
+input[type=button]:hover, input[type=submit]:hover {
+	background: #eeecba;
+}
+
+input[type=text], select {
+	outline: none;
+}
+
+.big-btn {
+	padding: 0.4em 1em 0.4em 1em;
+	font-size: 1rem;
+}
+
+.small-btn {
+	padding: 0.4em 1em 0.4em 1em;
+	font-size: 0.8rem;
+}
+
+.back {
+	font-weight: bold;
+}
+
+nav li {
+	list-style: none;
+	display: inline-block;
+	padding-right: 2em;
 }
 
 table {
 	width: 100%;
-	border: none;
-	background-color: rgb(134, 0, 87);
+	margin: 1em 0;
 }
 
-table th {
-	text-align: left;
+table thead th {
+	padding: 0.5em 1.2em;
 }
 
-table td, table th {
-	text-align: left;
-	background-color: rgba(55, 0, 53, 0.2);
+table .even {
+	background-color: #f6f5d9;
 }
 
-.input-div {
-	width: 100%;
-}
-
-.small-col {
-	width: 30px;
-}
-
-.form, .delete-input, .table-btn {
-	width: 100%;
-	height: 100%;
-	border: none;
-}
-
-.delete-input {
-	background-color: red;
-	color: black;
-	font-weight: bold;	
-}
-
-.reg-btn {
-	width: 150px;
-	height: 30px;
-	font-size: 20px;
-}
-
-.form-btn {
-	
-}
-
-.even {
-	background-color: rgba(55, 0, 53, 0.3);
-}
-
-.odd {
-	background-color: rgba(100, 33, 103, 0.3);
+table .odd {
+	background-color: #f1f0de;
 }

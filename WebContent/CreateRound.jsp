@@ -12,56 +12,72 @@
 <title>VocabTrainer - Training</title>
 </head>
 <body>
-	<h1>VocabTrainer -> Training -> Vocabulary -> Create Round</h1>
+	<header>
+		<div class="container">
+			<h1>VocabTrainer -> Training -> Vocabulary -> Create Round</h1>
+		</div>
+	</header>
 
-	<form action="/VocabTrainer/Training/Vocabulary" method="GET">
-		<input class="reg-btn" type="submit" value="BACK">
-	</form>
+	<section>
+		<div class="container">
+			<nav>
+				<ul>
+					<li>
+						<form action="/VocabTrainer/Training/Vocabulary" method="GET">
+							<input class="big-btn back" type="submit" value="BACK">
+						</form>
+					</li>
 
-	<br>
+				</ul>
+			</nav>
+		</div>
+	</section>
 
-	<p>you must only select lists with the same languages</p>
-	<p>you also must only select a prompted language which is included
-		in the languages of the selected lists</p>
 
-	<div class="input-div">
-		<form id="newRound" action="/VocabTrainer/Training/Vocabulary/create"
-			method="POST">
-			<table>
-				<thead>
-					<tr>
-						<th class="small-col">ID</th>
-						<th>description</th>
-						<th>first language</th>
-						<th>second language</th>
-						<th class="small-col">select</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="list" items="${lists}" varStatus="loop">
-						<tr class="${loop.index % 2 == 0 ? 'even' : 'odd'}">
-							<td>${list.ID}</td>
-							<td>${list.description}</td>
-							<td>${list.lang1.toString()}</td>
-							<td>${list.lang2.toString()}</td>
-							<td>
-								<input type="checkbox" name="checkbox-${list.ID}">
-							</td>
+	<section>
+		<div class="container">
+			<p>the lists you select must not have more than two different languages</p>
+			<p>the prompted language must be contained in your selected lists' languages</p>
+
+			<form id="newRound" action="/VocabTrainer/Training/Vocabulary/create" method="POST">
+				<table>
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>description</th>
+							<th>first language</th>
+							<th>second language</th>
+							<th>select</th>
 						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						<c:forEach var="list" items="${lists}" varStatus="loop">
+							<tr class="${loop.index % 2 == 0 ? 'even' : 'odd'}">
+								<td>${list.ID}</td>
+								<td>${list.description}</td>
+								<td>${list.lang1.toString()}</td>
+								<td>${list.lang2.toString()}</td>
+								<td><input type="checkbox" name="checkbox-${list.ID}">
+								</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
 
-			<input type="submit">
-		</form>
+				<label>prompted language: </label> <select name="promptedLang" form="newRound">
+				<c:forEach var="lang" items="${langs}">
+					<option value="${lang.toString()}">${lang.toString()}</option>
+				</c:forEach>
+				<input class="big-btn" type="submit" value="CREATE NEW ROUND">
+				</select>
+			</form>
 
-		<label>prompted language (can only be): </label> <select
-			name="promptedLang" form="newRound">
-			<c:forEach var="lang" items="${langs}">
-				<option value="${lang.toString()}">${lang.toString()}</option>
-			</c:forEach>
-		</select>
-	</div>
+			
+			
+		</div>
+	</section>
+
+
 
 </body>
 </html>

@@ -43,8 +43,10 @@ public class DBManager {
 	}
 
 	public static boolean save(VocabWord w) {
-		if (getWordByID(w.getID()) != null) {
+		if (w == null) return false;
+		if (isSavedVocabWord(w.getID())) {
 			Logger.log("Updating VocabWord not implemented yet");
+			// TODO implement update(VocabWord)
 			return false;
 		} else {
 			final String query = "INSERT INTO " + Config.dbTableWords + " (word_id, list_id, word_lang1, word_lang2) "
@@ -55,9 +57,14 @@ public class DBManager {
 		}
 	}
 
+	public static boolean isSavedVocabWord(Long wordID) {
+		return (getWordByID(wordID) == null) ? false : true;
+	}
+
 	public static boolean save(VocabTWord wt) {
-		if (getTWordByID(wt.getID()) != null) {
-			Logger.log("Updating VocabWordTraining not implemented yet");
+		if (isSavedVocabTWord(wt)) {
+			Logger.log(MessageType.WARNING, "Updating VocabWordTraining not implemented yet");
+			// TODO implement update(VocabTWord)
 			return false;
 		} else {
 			final String query = "INSERT INTO " + Config.dbTableTWords
@@ -69,9 +76,14 @@ public class DBManager {
 		}
 	}
 
+	public static boolean isSavedVocabTWord(VocabTWord wt) {
+		return (getTWordByID(wt.getID()) == null) ? false : true;
+	}
+
 	public static boolean save(VocabList l) {
-		if (getListByID(l.getID()) != null) {
-			Logger.log("Updating VocabList not implemented yet");
+		if (isSavedVocabList(l)) {
+			Logger.log(MessageType.WARNING, "Updating VocabList not implemented yet");
+			// TODO implement update(VocabList)
 			return false;
 		} else {
 			;
@@ -83,9 +95,14 @@ public class DBManager {
 		}
 	}
 
+	public static boolean isSavedVocabList(VocabList l) {
+		return (getListByID(l.getID()) == null) ? false : true;
+	}
+
 	public static boolean save(VocabRound r) {
-		if (getRoundByID(r.getID()) != null) {
-			Logger.log("Updating VocabRound not implemented yet");
+		if (isSavedVocabRound(r)) {
+			Logger.log(MessageType.WARNING, "Updating VocabRound not implemented yet");
+			// TODO implement update(VocabRound)
 			return false;
 		} else {
 			final String query = "INSERT INTO " + Config.dbTableRounds
@@ -99,8 +116,12 @@ public class DBManager {
 		}
 	}
 
+	public static boolean isSavedVocabRound(VocabRound r) {
+		return (getRoundByID(r.getID()) == null) ? false : true;
+	}
+
 	public static boolean save(VocabCycle c) {
-		if (getCycleByID(c.getID()) != null) {
+		if (isSavedVocabCycle(c)) {
 			Logger.log("Updating VocabCycle not implemented yet");
 			return false;
 		} else {
@@ -112,6 +133,10 @@ public class DBManager {
 			Logger.log(query);
 			return execute(query);
 		}
+	}
+
+	public static boolean isSavedVocabCycle(VocabCycle c) {
+		return (getCycleByID(c.getID()) == null) ? false : true;
 	}
 
 	private static boolean execute(String query) {
@@ -317,6 +342,10 @@ public class DBManager {
 		}
 	}
 
+	public static LinkedList<VocabList> getListsByRoundID(Long roundID) {
+		return null;
+	}
+
 	public static LinkedList<VocabTWord> getTWordsByWordID(Long wordID) {
 		if (wordID != null && wordID > -1) {
 			LinkedList<VocabTWord> tWords = new LinkedList<VocabTWord>();
@@ -446,10 +475,10 @@ public class DBManager {
 		}
 	}
 
-	public static VocabTWord getTWordByID(Long wordTrainingID) {
-		if (wordTrainingID != null && wordTrainingID > -1) {
-			final String query = "SELECT * FROM " + Config.dbTableTWords + " WHERE tword_id = "
-					+ wordTrainingID.toString() + ";";
+	public static VocabTWord getTWordByID(Long tWordID) {
+		if (tWordID != null && tWordID > -1) {
+			final String query = "SELECT * FROM " + Config.dbTableTWords + " WHERE tword_id = " + tWordID.toString()
+					+ ";";
 			try {
 				s = connection.createStatement();
 				ResultSet rs = s.executeQuery(query);
@@ -476,121 +505,107 @@ public class DBManager {
 	}
 
 	public static VocabRound getRoundByID(Long roundID) {
-		if (roundID != null && roundID > -1) {
-			final String query = "SELECT * FROM " + Config.dbTableRounds + " WHERE round_id = " + roundID.toString()
-					+ ";";
+		if (roundID == null || roundID < 0) return null;
+		final String query = "SELECT * FROM " + Config.dbTableRounds + " WHERE round_id = " + roundID.toString() + ";";
 
-			try {
-				s = connection.createStatement();
-				ResultSet rs = s.executeQuery(query);
-				if (rs.last()) {
-					boolean completed = rs.getBoolean("completed");
-					String listIDsStr = rs.getString("list_ids");
-					String lang1 = rs.getString("lang1");
-					String lang2 = rs.getString("lang2");
-					String pLang = rs.getString("prompted_lang");
-					float time = rs.getFloat("time");
-					int trueCount = rs.getInt("true_count");
-					int falseCount = rs.getInt("false_count");
-					float tfRatio = rs.getFloat("tf_ratio");
+		try {
+			s = connection.createStatement();
+			ResultSet rs = s.executeQuery(query);
+			if (!rs.last()) return null;
 
-					LinkedList<Long> listIDs = parseIDs(listIDsStr);
-					LinkedList<Long> cycleIDs = new LinkedList<Long>();
-					LinkedList<VocabCycle> cycles = getCyclesByRoundID(roundID);
-					if (cycles != null) {
-						if (cycles.size() > 0) {
-							for (int i = 0; i < cycles.size(); i++) {
-								VocabCycle c = cycles.get(i);
-								cycleIDs.add(c.getID());
-							}
-						}
+			boolean completed = rs.getBoolean("completed");
+			String listIDsStr = rs.getString("list_ids");
+			String lang1 = rs.getString("lang1");
+			String lang2 = rs.getString("lang2");
+			String pLang = rs.getString("prompted_lang");
+			float time = rs.getFloat("time");
+			int trueCount = rs.getInt("true_count");
+			int falseCount = rs.getInt("false_count");
+			float tfRatio = rs.getFloat("tf_ratio");
+
+			LinkedList<Long> listIDs = parseIDs(listIDsStr);
+			LinkedList<Long> cycleIDs = new LinkedList<Long>();
+			LinkedList<VocabCycle> cycles = getCyclesByRoundID(roundID);
+			if (cycles != null) {
+				if (cycles.size() > 0) {
+					for (int i = 0; i < cycles.size(); i++) {
+						VocabCycle c = cycles.get(i);
+						cycleIDs.add(c.getID());
 					}
-
-					VocabPair languages = new VocabPair(VocabLang.parseLang(lang1), VocabLang.parseLang(lang2));
-					VocabLang promptedLang = VocabLang.parseLang(pLang);
-
-					return (new VocabRound(roundID, completed, listIDs, cycleIDs, languages, promptedLang, time,
-							trueCount, falseCount, tfRatio));
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return null;
 			}
-			return null;
-		} else {
+
+			VocabPair languages = new VocabPair(VocabLang.parseLang(lang1), VocabLang.parseLang(lang2));
+			VocabLang promptedLang = VocabLang.parseLang(pLang);
+
+			return (new VocabRound(roundID, completed, listIDs, cycleIDs, languages, promptedLang, time, trueCount,
+					falseCount, tfRatio));
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
 
 	public static VocabCycle getCycleByID(Long cycleID) {
-		if (cycleID != null && cycleID > -1) {
-			final String query = "SELECT * FROM " + Config.dbTableCycles + " WHERE cycle_id = " + cycleID.toString()
-					+ ";";
-			try {
-				s = connection.createStatement();
-				ResultSet rs = s.executeQuery(query);
-				if (rs.last()) {
-					Long roundID = rs.getLong("round_id");
-					boolean completed = rs.getBoolean("completed");
-					int wordCount = rs.getInt("word_count");
-					Long currTWordID = rs.getLong("curr_tword_id");
-					int trueCount = rs.getInt("true_count");
-					int falseCount = rs.getInt("false_count");
-					float tfRatio = rs.getFloat("tf_ratio");
-					float time = rs.getFloat("time");
-					return new VocabCycle(cycleID, roundID, completed, wordCount, currTWordID, trueCount, falseCount,
-							tfRatio, time);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return null;
-			}
-			return null;
-		} else {
+		if (cycleID == null || cycleID < 0) return null;
+		final String query = "SELECT * FROM " + Config.dbTableCycles + " WHERE cycle_id = " + cycleID.toString() + ";";
+		try {
+			s = connection.createStatement();
+			ResultSet rs = s.executeQuery(query);
+			if (!rs.last()) return null;
+
+			Long roundID = rs.getLong("round_id");
+			boolean completed = rs.getBoolean("completed");
+			int wordCount = rs.getInt("word_count");
+			Long currTWordID = rs.getLong("curr_tword_id");
+			int trueCount = rs.getInt("true_count");
+			int falseCount = rs.getInt("false_count");
+			float tfRatio = rs.getFloat("tf_ratio");
+			float time = rs.getFloat("time");
+			
+			return new VocabCycle(cycleID, roundID, completed, wordCount, currTWordID, trueCount, falseCount, tfRatio,
+					time);
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return null;
 		}
+
 	}
 
 	public static boolean deleteListByID(Long listID) {
+		if(listID == null || listID < 0) return false;
 		final String query = "DELETE FROM " + Config.dbTableLists + " WHERE list_id = " + listID.toString() + ";";
 		final VocabList list = getListByID(listID);
-
-		if (list != null) {
-			LinkedList<VocabWord> words = list.getWords();
-			if (words != null) {
-				if (words.size() > 0) {
-					for (int i = 0; i < words.size(); i++) {
-						if (!deleteWordByID(words.get(i).getID())) {
-							Logger.log(MessageType.WARNING,
-									"Could not delete word #" + words.get(i).getID() + " of list #" + listID);
-						}
-					}
-				}
+		
+		LinkedList<VocabWord> words = list.getWords();
+		if (words == null) return false;
+		for (int i = 0; i < words.size(); i++) {
+			if (!deleteWordByID(words.get(i).getID())) {
+				Logger.log(MessageType.WARNING,
+						"Could not delete word #" + words.get(i).getID() + " of list #" + listID);
 			}
-			Logger.log(query);
-			return execute(query);
-		} else {
-			return false;
 		}
+		
+		Logger.log(query);
+		return execute(query);
 	}
 
 	public static boolean deleteWordByID(Long wordID) {
+		if(wordID == null || wordID < 0) return false;
 		final String query = "DELETE FROM " + Config.dbTableWords + " WHERE word_id = " + wordID.toString() + ";";
-		VocabWord word = getWordByID(wordID);
-		if (word != null) {
-			LinkedList<VocabTWord> tWords = getTWordsByWordID(wordID);
-			if (tWords != null) {
-				if (tWords.size() > 0) {
-					for (int i = 0; i < tWords.size(); i++) {
-						VocabTWord tWord = tWords.get(i);
-						if (tWord != null) {
-							if (!deleteTWordByID(tWord.getID())) {
-								Logger.log(MessageType.WARNING,
-										"Could not delete tWord #" + tWord.getID() + " which uses word #" + wordID);
-							}
+		if(!isSavedVocabWord(wordID)) return false;
+		LinkedList<VocabTWord> tWords = getTWordsByWordID(wordID);
+		if (tWords != null) {
+			if (tWords.size() > 0) {
+				for (int i = 0; i < tWords.size(); i++) {
+					VocabTWord tWord = tWords.get(i);
+					if (tWord != null) {
+						if (!deleteTWordByID(tWord.getID())) {
+							Logger.log(MessageType.WARNING,
+									"Could not delete tWord #" + tWord.getID() + " which uses word #" + wordID);
 						}
-
 					}
+
 				}
 			}
 		}

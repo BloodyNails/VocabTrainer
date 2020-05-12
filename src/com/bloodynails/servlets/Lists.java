@@ -53,32 +53,16 @@ public class Lists extends HttpServlet {
 		
 		// ADD NEW LIST
 		if(request.getParameter("description") != null && request.getParameter("lang1") != null && request.getParameter("lang2") != null) {
-			String description = (String) request.getParameter("description");
-			String lang1 = (String) request.getParameter("lang1");
-			String lang2 = (String) request.getParameter("lang2");
-			if(description != null) {
-				if(!description.isEmpty()) {
-					VocabPair langs = new VocabPair(VocabLang.parseLang(lang1), VocabLang.parseLang(lang2));
-					if(langs.isValid()) {
-						DBManager.save(new VocabList(description, langs));
-					}
-					else {
-						// TODO: html warning (langs invalid either because lang1 == lang2 or because of other reasons)
-						Logger.log(MessageType.WARNING, "Languages invalid on creating a new list");
-					}
-				}
-				else {
-					// TODO: html warning (description empty)
-					Logger.log(MessageType.WARNING, "Description is empty on creating a new list");
-				}
-			}
-			else {
-				String e = "Description should not be null on creating a new list";
-				Logger.log(MessageType.WARNING, e);
-				throw new NullPointerException(e);
-			}
+			String description = request.getParameter("description");
+			String lang1 = request.getParameter("lang1");
+			String lang2 = request.getParameter("lang2");
+			if(description == null) throw new NullPointerException("description should not be null on creating a new list");
+			if(lang1 == null) throw new NullPointerException("lang1 should not be null");
+			if(lang2 == null) throw new NullPointerException("lang2 should not be null");
+			if(description.isEmpty()) Logger.log(MessageType.WARNING, "Description is empty on creating a new list");
+			VocabPair langs = new VocabPair(VocabLang.parseLang(lang1), VocabLang.parseLang(lang2));
+			DBManager.save(new VocabList(description, langs));
 		}
-		
 		
 		doGet(request, response);
 	}

@@ -9,15 +9,33 @@
 	<title>VocabTrainer - Training</title>
 </head>
 <body>
-	<h1>VocabTrainer -> Training</h1>
-	
-	<form action="/VocabTrainer" method="GET">
-		<input class="reg-btn" type="submit" value="BACK">
-	</form>
-	
-	<br>
-	<form action="Training/Vocabulary" style="" method="GET">
-		<input class="reg-btn" type="submit" value="Vocabulary">
-	</form>
+	<header>
+		<div class="container">
+			<h1>VocabTrainer -> Training</h1>	
+		</div>
+	</header>
+
+	<section>
+		<div class="container">
+			<nav>
+				<ul>
+					<li>
+						<form action="/VocabTrainer" method="GET">
+							<input class="big-btn back" type="submit" value="BACK">
+						</form>
+					</li>
+					<li>
+						<form action="Training/Vocabulary" style="" method="GET">
+							<input class="big-btn" type="submit" value="VOCABULARY">
+						</form>
+					</li>
+					<li> 
+						<input class="big-btn" type="submit" value="more to come">
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</section>
+
 </body>
 </html>

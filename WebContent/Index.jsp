@@ -9,12 +9,33 @@
 	<title>VocabTrainer - Main Menu</title>
 </head>
 <body>
-	<form action="Lists" method="GET">
-		<input class="reg-btn" type="submit" value="LISTS">
-	</form>
-	<br>
-	<form action="Training" method="GET">
-		<input class="reg-btn" type="submit" value="TRAINING">
-	</form>
+	<header>
+		<div class="container">
+			<h1>VocabTrainer</h1>
+			<p>written in Java</p>
+			<p>source available <a href="https://github.com/BloodyNails/VocabTrainer">here</a></p>
+		</div>
+	</header>
+
+	<section>
+		<div class="container">
+			<nav>
+				<ul>
+					<li>
+						<form action="Lists" method="GET">
+							<input class="big-btn" type="submit" value="LISTS">
+						</form>
+					</li>
+					<li>
+						<form action="Training" method="GET">
+							<input class="big-btn" type="submit" value="TRAINING">
+						</form>
+					</li>
+				</ul>
+			</nav>
+
+		</div>
+	</section>
+
 </body>
 </html>

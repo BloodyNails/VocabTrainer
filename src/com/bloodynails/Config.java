@@ -31,11 +31,11 @@ public class Config {
 	public static final String dbTableTWords = dbName + "." + "twords";
 	
 	// make this secure in the future
-	private static final String dbUrlPrefix = "jdbc:mysql://localhost:3306/vocabtrainer";
+	private static final String dbUrlPrefix = "jdbc:mysql://localhost:3306/" + dbName;
 	private static final String dbUrlSuffix = "?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
 	public static final String dbUrl = dbUrlPrefix + dbUrlSuffix;
 
-	public static final String dbUser = "brutus";
+	public static final String dbUser = "root";
 	public static final String dbPass = "pass";
 	
 }

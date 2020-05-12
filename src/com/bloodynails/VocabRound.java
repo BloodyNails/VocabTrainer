@@ -9,9 +9,7 @@ import com.bloodynails.logging.Logger;
 import com.bloodynails.logging.MessageType;
 
 public class VocabRound extends DBObj {
-	// TODO: check if languages are compatible with selected lists
-	// also make it so only lists of same languages can be selected
-	// maybe forget about that above and enable mixed rounds with different langs?
+	// TODO: make it so only lists of same languages can be selected
 
 	private boolean completed = false; // was the round completed the last time the user interacted with it
 	private LinkedList<Long> listIDs = new LinkedList<Long>(); // IDs of all lists which are selected before creating
@@ -25,14 +23,29 @@ public class VocabRound extends DBObj {
 	private int falseCount = 0; // amount of submitted inputs with false answers (sum of all cycles)
 	private float tfRatio = 1f; // average ration of all cycles
 
-	public VocabRound(Long ID, boolean completed, LinkedList<Long> listIDs, LinkedList<Long> cycleIDs,
+	public VocabRound(Long roundID, boolean completed, LinkedList<Long> listIDs, LinkedList<Long> cycleIDs,
 			VocabPair languages, VocabLang promptedLang, float time, int trueCount, int falseCount, float tfRatio) {
-		super(ID, DBObjType.ROUND);
+
+		super(roundID, DBObjType.ROUND);
+
+		if (roundID < 0) throw new IllegalArgumentException("roundID must be greater or equal to 0");
+		if (listIDs == null) throw new NullPointerException("listIDs must not be null");
+		if (cycleIDs == null) throw new NullPointerException("cycleIDs must not be null");
+		if (languages == null) throw new NullPointerException("languages must not be null");
+		if (promptedLang == null) throw new NullPointerException("promptedLang must not be null");
+		if (!languages.contains(promptedLang))
+			throw new IllegalArgumentException("promptedLang must be contained by languages");
+		if (time < 0) time = 0;
+		if (trueCount < 0) trueCount = 0;
+		if (falseCount < 0) falseCount = 0;
+		if (tfRatio < 0) tfRatio = 0;
+		if (tfRatio > 1) tfRatio = 1;
+
 		this.completed = completed;
 		this.listIDs = listIDs;
 		this.cycleIDs = cycleIDs;
 		this.languages = languages;
-		if (languages.contains(promptedLang)) this.promptedLang = promptedLang;
+		this.promptedLang = promptedLang;
 		this.time = time;
 		this.trueCount = trueCount;
 		this.falseCount = falseCount;
@@ -42,7 +55,21 @@ public class VocabRound extends DBObj {
 
 	public VocabRound(boolean completed, LinkedList<Long> listIDs, LinkedList<Long> cycleIDs, VocabPair languages,
 			VocabLang promptedLang, float time, int trueCount, int falseCount, float tfRatio) {
+
 		super(DBManager.getNextRoundID(), DBObjType.ROUND);
+
+		if (listIDs == null) throw new NullPointerException("listIDs must not be null");
+		if (cycleIDs == null) throw new NullPointerException("cycleIDs must not be null");
+		if (languages == null) throw new NullPointerException("languages must not be null");
+		if (promptedLang == null) throw new NullPointerException("promptedLang must not be null");
+		if (!languages.contains(promptedLang))
+			throw new IllegalArgumentException("promptedLang must be contained by languages");
+		if (time < 0) time = 0;
+		if (trueCount < 0) trueCount = 0;
+		if (falseCount < 0) falseCount = 0;
+		if (tfRatio < 0) tfRatio = 0;
+		if (tfRatio > 1) tfRatio = 1;
+
 		this.completed = completed;
 		this.listIDs = listIDs;
 		this.cycleIDs = cycleIDs;
@@ -63,16 +90,15 @@ public class VocabRound extends DBObj {
 				+ time + "\n" + "trueCount: " + trueCount + "\n" + "falseCount: " + falseCount + "\n" + "tfRatio: "
 				+ tfRatio;
 	}
-	
+
 	public VocabRound removeWrongLangs() {
-		for(int i = 0; i < this.listIDs.size(); i++) {
-			if(DBManager.getListByID(listIDs.get(i)) != null) {
+		for (int i = 0; i < this.listIDs.size(); i++) {
+			if (DBManager.getListByID(listIDs.get(i)) != null) {
 				VocabPair listLangs = DBManager.getListByID(listIDs.get(i)).getLangs();
-				if(!listLangs.compareTo(languages)) {
+				if (!listLangs.compareTo(languages)) {
 					listIDs.remove(i);
 				}
-			}
-			else {
+			} else {
 				Logger.log(MessageType.WARNING, "List specified inside round is not found DB");
 			}
 		}
@@ -90,56 +116,51 @@ public class VocabRound extends DBObj {
 	public LinkedList<Long> getListIDs() {
 		return listIDs;
 	}
-	
+
 	public LinkedList<VocabList> getLists() {
+		if (listIDs == null) return null;
+		if (listIDs.size() < 1) return new LinkedList<VocabList>();
 		LinkedList<VocabList> lists = new LinkedList<VocabList>();
-		if(this.listIDs != null && this.listIDs.size() > 0) {
-			for(int i = 0; i < this.listIDs.size(); i++) {
-				VocabList l = DBManager.getListByID(this.listIDs.get(i));
-				lists.add(l);
-			}
+		for (int i = 0; i < this.listIDs.size(); i++) {
+			VocabList l = DBManager.getListByID(this.listIDs.get(i));
+			lists.add(l);
 		}
 		return lists;
 	}
 
 	public String listIDsToString() {
+		if (listIDs == null) return null;
+		if (listIDs.size() < 1) return new String();
 		String s = "";
-		if (listIDs != null && listIDs.size() > 0) {
-			for (int i = 0; i < listIDs.size(); i++) {
-				if (i > 0) s += ",";
-				s += listIDs.get(i).toString();
-			}
+		for (int i = 0; i < listIDs.size(); i++) {
+			if (i > 0) s += ",";
+			s += listIDs.get(i).toString();
 		}
 		return s;
 	}
 
 	public String[] getListDescriptions() {
-		if(listIDs != null) {
-			String[] s = new String[listIDs.size()];
-			if (listIDs != null && listIDs.size() > 0) {
-				for (int i = 0; i < listIDs.size(); i++) {
-					if(DBManager.getListByID(listIDs.get(i)) == null) {
-						Logger.log(MessageType.WARNING, "List specified inside round is not found DB");
-						s[i] = "List #"+listIDs.get(i).toString()+" not found";
-					}
-					else {
-						s[i] = DBManager.getListByID(listIDs.get(i)).getDescription();
-					}
-						
-				}
+		if (listIDs == null) return null;
+		if (listIDs.size() < 1) return new String[0];
+		String[] descriptions = new String[listIDs.size()];
+		for (int i = 0; i < listIDs.size(); i++) {
+			if (DBManager.getListByID(listIDs.get(i)) == null) {
+				Logger.log(MessageType.WARNING, "List specified inside round is not found DB");
+				descriptions[i] = "List #" + listIDs.get(i).toString() + " not found";
+			} else {
+				descriptions[i] = DBManager.getListByID(listIDs.get(i)).getDescription();
 			}
-			return s;
 		}
-		else return null;
+		return descriptions;
 	}
 
 	public String cycleIDsToString() {
-		String s = "";
-		if (cycleIDs != null && cycleIDs.size() > 0) {
-			for (int i = 0; i < cycleIDs.size(); i++) {
-				if (i > 0) s += ",";
-				s += cycleIDs.get(i).toString();
-			}
+		if (cycleIDs == null) return null;
+		if (cycleIDs.size() < 1) return new String();
+		String s = new String();
+		for (int i = 0; i < cycleIDs.size(); i++) {
+			if (i > 0) s += ",";
+			s += cycleIDs.get(i).toString();
 		}
 		return s;
 	}
@@ -147,7 +168,7 @@ public class VocabRound extends DBObj {
 	public LinkedList<Long> getCycleIDs() {
 		return cycleIDs;
 	}
-	
+
 	public LinkedList<VocabCycle> getCycles() {
 		return DBManager.getCyclesByRoundID(this.ID);
 	}
@@ -179,7 +200,7 @@ public class VocabRound extends DBObj {
 	public void addTime(float time) {
 		this.time += time;
 	}
-	
+
 	public void addCycleID(Long cycleID) {
 		cycleIDs.add(cycleID);
 	}

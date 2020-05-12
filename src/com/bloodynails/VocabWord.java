@@ -19,6 +19,8 @@ public class VocabWord extends DBObj{
 	
 	public VocabWord(Long wordID, Long listID, String wordLang1, String wordLang2) {
 		super(wordID, DBObjType.WORD);
+		if(wordID < 0) throw new IllegalArgumentException("wordID must be greater or equal to 0");
+		if(listID < 0) throw new IllegalArgumentException("listID must be greater or equal to 0");
 		this.listID = listID;
 		this.wordLang1 = wordLang1;
 		this.wordLang2 = wordLang2;

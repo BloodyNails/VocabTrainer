@@ -8,40 +8,40 @@ import java.time.format.DateTimeFormatter;
 public class Logger {
 	
 	private static final String datePattern = "HH:mm:ss";
-	private static final PrintStream ps = new PrintStream(System.out, true, Charset.forName("UTF-8"));
+	private static final PrintStream printStream = new PrintStream(System.out, true, Charset.forName("UTF-8"));
 	
 	
-	public static void log(Object o) {
-		log(MessageType.INFO, o);
+	public static void log(Object obj) {
+		log(MessageType.INFO, obj);
 	}
 	
-	public static void log(MessageType t, Object o) {
-		if(o.getClass() == String.class) {
-			String s = (String) o;
-			if(s.contains("\n")) {
-				multiLinePrint(t, s);
+	public static void log(MessageType type, Object obj) {
+		if(obj == null || type == null) return;
+		if(obj.getClass() == String.class) {
+			String str = (String) obj;
+			if(str.contains("\n")) {
+				multiLinePrint(type, str);
 			}
 			else {
-				print(t, s);
+				print(type, str);
 			}
 		}
 		else {
-			print(t, o);
+			print(type, obj);
 		}
 	}
 	
-	// TODO:
-	// write s to file and reset counter after every new file
-	private static void print(MessageType t, Object o) {
+	// TODO: write str to file
+	private static void print(MessageType type, Object obj) {
 		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern(datePattern)).toString();
-		String s = "[" + dateString + "][" + t.toString() + "]: " + o;
-		ps.println(s);
+		String s = "[" + dateString + "][" + type.toString() + "]: " + obj;
+		printStream.println(s);
 	}
 
-	private static void multiLinePrint(MessageType t, String s) {
-		String[] lines = s.split("\n");
-		for(Integer i = 0; i < lines.length; i++) {
-			print(t, i.toString() + ": " +lines[i]);
+	private static void multiLinePrint(MessageType type, String str) {
+		String[] lines = str.split("\n");
+		for(int i = 0; i < lines.length; i++) {
+			print(type, i + ": " + lines[i]);
 		}
 	}
 }
