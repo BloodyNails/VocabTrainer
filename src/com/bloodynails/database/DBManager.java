@@ -46,7 +46,7 @@ public class DBManager {
 
 	public static boolean save(VocabWord w) {
 		if (w == null) return false;
-		if (isSavedVocabWord(w.getID())) {
+		if (isSaved(w.getID())) {
 			Logger.log("Updating VocabWord not implemented yet");
 			// TODO implement update(VocabWord)
 			return false;
@@ -59,12 +59,12 @@ public class DBManager {
 		}
 	}
 
-	public static boolean isSavedVocabWord(Long wordID) {
+	public static boolean isSaved(Long wordID) {
 		return (getWordByID(wordID) == null) ? false : true;
 	}
 
 	public static boolean save(VocabTWord wt) {
-		if (isSavedVocabTWord(wt)) {
+		if (isSaved(wt)) {
 			Logger.log(MessageType.WARNING, "Updating VocabWordTraining not implemented yet");
 			// TODO implement update(VocabTWord)
 			return false;
@@ -78,12 +78,12 @@ public class DBManager {
 		}
 	}
 
-	public static boolean isSavedVocabTWord(VocabTWord wt) {
+	public static boolean isSaved(VocabTWord wt) {
 		return (getTWordByID(wt.getID()) == null) ? false : true;
 	}
 
 	public static boolean save(VocabList l) {
-		if (isSavedVocabList(l)) {
+		if (isSaved(l)) {
 			Logger.log(MessageType.WARNING, "Updating VocabList not implemented yet");
 			// TODO implement update(VocabList)
 			return false;
@@ -97,12 +97,12 @@ public class DBManager {
 		}
 	}
 
-	public static boolean isSavedVocabList(VocabList l) {
+	public static boolean isSaved(VocabList l) {
 		return (getListByID(l.getID()) == null) ? false : true;
 	}
 
 	public static boolean save(VocabRound r) {
-		if (isSavedVocabRound(r)) {
+		if (isSaved(r)) {
 			Logger.log(MessageType.WARNING, "Updating VocabRound not implemented yet");
 			// TODO implement update(VocabRound)
 			return false;
@@ -118,12 +118,12 @@ public class DBManager {
 		}
 	}
 	
-	public static boolean isSavedVocabRound(VocabRound r) {
+	public static boolean isSaved(VocabRound r) {
 		return (getRoundByID(r.getID()) == null) ? false : true;
 	}
 
 	public static boolean save(VocabCycle c) {
-		if (isSavedVocabCycle(c)) {
+		if (isSaved(c)) {
 			Logger.log("Updating VocabCycle not implemented yet");
 			return false;
 		} else {
@@ -132,12 +132,13 @@ public class DBManager {
 					+ " VALUES ('" + c.getID() + "', '" + c.getRoundID() + "', '" + c.isCompletedInt() + "', '"
 					+ c.getWordCount() + "', '" + c.getCurrTWordID() + "', '" + c.getTrueCount() + "', '"
 					+ c.getFalseCount() + "', '" + c.getTfRatio() + "', '" + c.getTimer().getCurrTime() + "');";
+			
 			Logger.log(query);
 			return execute(query);
 		}
 	}
 
-	public static boolean isSavedVocabCycle(VocabCycle c) {
+	public static boolean isSaved(VocabCycle c) {
 		return (getCycleByID(c.getID()) == null) ? false : true;
 	}
 
@@ -342,7 +343,10 @@ public class DBManager {
 	}
 
 	public static LinkedList<VocabList> getListsByRoundID(Long roundID) {
-		return null;
+		if(roundID == null || roundID < 0) return null;
+		VocabRound round = getRoundByID(roundID);
+		if(round == null) return null;
+		return round.getLists();
 	}
 
 	public static LinkedList<VocabTWord> getTWordsByWordID(Long wordID) {
@@ -412,7 +416,7 @@ public class DBManager {
 				int trueCount = rs.getInt("true_count");
 				int falseCount = rs.getInt("false_count");
 				float tfRatio = rs.getFloat("tf_ratio");
-				float time = rs.getFloat("time");
+				Long time = rs.getLong("time");
 				VocabCycle c = new VocabCycle(cycleID, roundID, completed, wordCount, currTWordID, trueCount,
 						falseCount, tfRatio, time);
 				cycles.add(c);
@@ -546,7 +550,7 @@ public class DBManager {
 			int trueCount = rs.getInt("true_count");
 			int falseCount = rs.getInt("false_count");
 			float tfRatio = rs.getFloat("tf_ratio");
-			float time = rs.getFloat("time");
+			Long time = rs.getLong("time");
 			
 			return new VocabCycle(cycleID, roundID, completed, wordCount, currTWordID, trueCount, falseCount, tfRatio,
 					time);
@@ -577,7 +581,7 @@ public class DBManager {
 
 	public static boolean deleteWordByID(Long wordID) {
 		if(wordID == null || wordID < 0) return false;
-		if(!isSavedVocabWord(wordID)) return false;
+		if(!isSaved(wordID)) return false;
 		
 		final String query = "DELETE FROM " + Config.dbTableWords + " WHERE word_id = " + wordID.toString() + ";";
 		

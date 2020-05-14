@@ -16,7 +16,7 @@ public class VocabCycle extends DBObj {
 	private float tfRatio; // tfRatio = falseCount / trueCount
 	private VocabTimer timer; // timer for cycle
 	
-	public VocabCycle(Long cycleID, Long roundID, boolean completed, int wordCount, Long currTWordID, int trueCount, int falseCount, float tfRatio, float time) {
+	public VocabCycle(Long cycleID, Long roundID, boolean completed, int wordCount, Long currTWordID, int trueCount, int falseCount, float tfRatio, Long time) {
 		super(cycleID, DBObjType.CYCLE);
 
 		if(cycleID == null) throw new NullPointerException("cycleID should not be null");
