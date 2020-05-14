@@ -97,7 +97,7 @@ public class CreateRound extends HttpServlet {
 		
 		VocabPair usedLangs = selectedLists.get(0).getLangs();
 		
-		// check whether the selected lists have the same languages
+		// checking whether the selected lists have the same languages
 		for(int j = 0; j < selectedLists.size(); j++) {
 			if(!selectedLists.get(j).getLangs().compareTo(usedLangs)) {
 				Logger.log(MessageType.WARNING, "lists did contain more than 2 languages");
@@ -105,7 +105,6 @@ public class CreateRound extends HttpServlet {
 				return;
 			}
 		}
-		
 		
 		boolean promptedLangIsCorrect = usedLangs.contains(promptedLang);
 		if(!promptedLangIsCorrect) {
@@ -115,14 +114,7 @@ public class CreateRound extends HttpServlet {
 		}
 		
 		VocabRound r = new VocabRound(false, selectedListIDs, new LinkedList<Long>(), usedLangs, promptedLang, 0f, 0, 0, 1);
-		Logger.log("success");
-		Logger.log(r.toString());
-		if(!DBManager.save(r)) {
-			Logger.log(MessageType.WARNING, "round " + r.toString() + " could not be saved or updated");
-			response.sendRedirect(backPath);
-			return;
-		}
-		
+		if(!DBManager.save(r)) Logger.log(MessageType.WARNING, "round " + r.toString() + " could not be saved or updated");
 		response.sendRedirect(backPath);
 	}
 

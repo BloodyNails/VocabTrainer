@@ -21,7 +21,7 @@
 				<ul>
 					<li>
 						<form action="/VocabTrainer" method="GET">
-							<input class="big-btn back" type="submit" value="BACK">
+							<input class="big-btn back-btn" type="submit" value="BACK">
 						</form>
 					</li>
 					<li>

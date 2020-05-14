@@ -47,17 +47,16 @@ input[type=text], select {
 	outline: none;
 }
 
-.big-btn {
+.big-btn, .small-btn {
 	padding: 0.4em 1em 0.4em 1em;
+}
+.big-btn {
 	font-size: 1rem;
 }
-
 .small-btn {
-	padding: 0.4em 1em 0.4em 1em;
 	font-size: 0.8rem;
 }
-
-.back {
+.back-btn {
 	font-weight: bold;
 }
 

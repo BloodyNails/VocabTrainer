@@ -619,6 +619,7 @@ public class DBManager {
 			Logger.log(MessageType.WARNING, "round #" + roundID + " could not be found");
 			return false;
 		}
+		
 		LinkedList<Long> cycleIDs = round.getCycleIDs();
 		if(cycleIDs == null) {
 			Logger.log(MessageType.WARNING, "cycleIDs of round #" + roundID + " is null");
@@ -660,6 +661,7 @@ public class DBManager {
 				}
 			}
 		}
+		
 		Logger.log(query);
 		return execute(query);
 	}
