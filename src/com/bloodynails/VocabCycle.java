@@ -18,6 +18,18 @@ public class VocabCycle extends DBObj {
 	
 	public VocabCycle(Long cycleID, Long roundID, boolean completed, int wordCount, Long currTWordID, int trueCount, int falseCount, float tfRatio, float time) {
 		super(cycleID, DBObjType.CYCLE);
+
+		if(cycleID == null) throw new NullPointerException("cycleID should not be null");
+		if(cycleID < 0) throw new IllegalArgumentException("cycleID must be equal to or greater than 0");
+		if(wordCount < 0) throw new IllegalArgumentException("a cycle can never have a wordCount less than 0");
+		if(currTWordID == null) throw new NullPointerException("currTWordID must not be null");
+		if(currTWordID < 0) throw new IllegalArgumentException("currTWordID must be equal to or greater than 0");
+		if(trueCount < 0) throw new IllegalArgumentException("a cycle can never have a trueCount less than 0");
+		if(falseCount < 0) throw new IllegalArgumentException("a cycle can never have a falseCount less than 0");
+		if(tfRatio < 0) throw new IllegalArgumentException("a cycle can never have a tfRatio less than 0");
+		if(tfRatio > 1) throw new IllegalArgumentException("a cycle can never have a tfRatio less than 1");
+		if(time < 0) throw new IllegalArgumentException("time must be equal to or greater than 0");
+			
 		this.roundID = roundID;
 		this.completed = completed;
 		this.wordCount = wordCount;

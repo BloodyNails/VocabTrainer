@@ -30,6 +30,7 @@ public class Vocabulary extends HttpServlet {
 		// options:
 		//  create new round
 		//  delete round
+		//  continue round 
 		//  view stats
 		LinkedList<VocabRound> rounds = DBManager.getAllRounds();
 		

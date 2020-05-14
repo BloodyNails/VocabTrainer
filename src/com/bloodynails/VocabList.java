@@ -12,12 +12,24 @@ public class VocabList extends DBObj{
 	
 	public VocabList (String description, VocabPair languages) {
 		super(DBManager.getNextListID(), DBObjType.LIST);
+		
+		if(description == null) throw new NullPointerException("description must not be null");
+		if (description.isEmpty()) throw new IllegalArgumentException("description of list #" + super.getID() + " is empty");
+		if(languages == null) throw new NullPointerException("languages must not be null");
+		
 		this.description = description;
 		this.languages = languages;
 	}
 	
 	public VocabList(Long listID, String description, VocabPair languages) {
 		super(listID, DBObjType.LIST);
+		
+		if(listID == null) throw new NullPointerException("listID must not be null");
+		if(listID < 0) throw new IllegalArgumentException("listID must be equal to or greater than 0");
+		if(description == null) throw new NullPointerException("description must not be null");
+		if (description.isEmpty()) throw new IllegalArgumentException("description of list #" + super.getID() + " is empty");
+		if(languages == null) throw new NullPointerException("languages must not be null");
+		
 		this.description = description;
 		this.languages = languages;
 	}

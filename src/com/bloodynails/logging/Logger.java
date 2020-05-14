@@ -33,7 +33,7 @@ public class Logger {
 	
 	// TODO: write str to file
 	private static void print(MessageType type, Object obj) {
-		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern(datePattern)).toString();
+		String dateString = LocalDateTime.now().format(DateTimeFormatter.ofPattern(datePattern));
 		String s = "[" + dateString + "][" + type.toString() + "]: " + obj;
 		printStream.println(s);
 	}

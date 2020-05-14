@@ -24,96 +24,106 @@ import com.bloodynails.logging.MessageType;
 @WebServlet(com.bloodynails.Config.internalCreateRoundPath)
 public class CreateRound extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private static String backPath = Config.externalVocabularyPath;
 
     public CreateRound() {
         super();
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if(DBManager.getAllLists() != null) {
-			LinkedList<VocabList> lists = DBManager.getAllLists();
-			if(lists != null && lists.size() > 0) {
-				request.setAttribute("listCount", lists.size());		
-				request.setAttribute("lists", lists);
-				LinkedList<VocabLang> langs = new LinkedList<VocabLang>();
-				for(int i = 0; i < lists.size(); i++) {
-					if(!langs.contains(lists.get(i).getLang1())) {
-						langs.add(lists.get(i).getLang1());
-					}
-					if(!langs.contains(lists.get(i).getLang2())) {
-						langs.add(lists.get(i).getLang2());
-					}
-				}
-				request.setAttribute("langs", langs);
+		LinkedList<VocabLang> langs = new LinkedList<VocabLang>();
+		LinkedList<VocabList> lists = DBManager.getAllLists();
+		
+		if(lists == null) {
+			Logger.log(MessageType.WARNING, "lists must not be null");
+			response.sendRedirect(backPath);
+			return;
+		}
+		
+		if(lists.size() < 1) {
+			Logger.log(MessageType.WARNING, "DBManager didn't find any lists in DB");
+			response.sendRedirect(backPath);
+			return;
+		}
+		
+		// iterating over all selected lists and adding the langs to the LinkedList
+		// this is used for the dropdown
+		for(int i = 0; i < lists.size(); i++) {
+			if(!langs.contains(lists.get(i).getLang1())) {
+				langs.add(lists.get(i).getLang1());
+			}
+			if(!langs.contains(lists.get(i).getLang2())) {
+				langs.add(lists.get(i).getLang2());
 			}
 		}
+		
+		request.setAttribute("listCount", lists.size());		
+		request.setAttribute("lists", lists);
+		request.setAttribute("langs", langs);
+			
 		request.getRequestDispatcher("/CreateRound.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LinkedList<Long> selectedIDs = new LinkedList<Long>();
-		
+		LinkedList<Long> selectedListIDs = new LinkedList<Long>();
 		Map<String, String[]> requestMap = request.getParameterMap();
+		List<VocabList> selectedLists = new LinkedList<VocabList>();
+		
+		VocabLang promptedLang = VocabLang.parseLang(request.getParameter("promptedLang"));
+		if(promptedLang == null) {
+			Logger.log(MessageType.WARNING, "promptedLang is null after parsing POST parameter upon creating a new round");
+			response.sendRedirect(backPath);
+			return;
+		}
 		
 		for(Entry<String, String[]> entry : requestMap.entrySet()) {
 			if(entry.getKey().toLowerCase().contains("checkbox") && entry.getValue()[0].toLowerCase().equals("on")) {
 				String idStr = entry.getKey().toLowerCase().split("-")[1];
 				Long id = Long.parseLong(idStr);
-				selectedIDs.add(id);
+				selectedListIDs.add(id);
 			}
 		}
 		
-		boolean continueCreation = true;
+		if(selectedListIDs.size() < 1) {
+			Logger.log(MessageType.WARNING, "no lists were selected upon creating a new round");
+			response.sendRedirect(backPath);
+			return;
+		}
 		
-		if(selectedIDs.size() > 0) {
-			
-			VocabLang promptedLang = VocabLang.parseLang(request.getParameter("promptedLang"));
-			
-			List<VocabList> selectedLists = new LinkedList<VocabList>();
-			
-			for(int i = 0; i < selectedIDs.size(); i++) {
-				selectedLists.add(DBManager.getListByID(selectedIDs.get(i)));
-			}
-			
-			VocabPair usedLangs = selectedLists.get(0).getLangs();
-			
-			// TODO: implement warnings for user
-			
-			for(int j = 0; j < selectedLists.size(); j++) {
-				if(!selectedLists.get(j).getLangs().compareTo(usedLangs)) {
-					Logger.log(MessageType.WARNING, "lists did contain more than 2 languages");
-					continueCreation = false;
-					break;
-				}
-			}
-			
-			if(promptedLang != null) {
-				boolean correctLanguages = usedLangs.contains(promptedLang);
-				if(!correctLanguages) {
-					Logger.log(MessageType.WARNING, "prompted language not in selected lists");
-				}
-				continueCreation &= correctLanguages;
-				
-			}
-			else {
-				Logger.log(MessageType.WARNING, "prompted language could not be parsed");
-				continueCreation = false;
-			}
-			
-			if(continueCreation) {
-				VocabRound r = new VocabRound(false, selectedIDs, new LinkedList<Long>(), usedLangs, promptedLang, 0f, 0, 0, 1);
-				Logger.log("success");
-				Logger.log(r.toString());
-				DBManager.save(r);
-				response.sendRedirect(Config.externalVocabularyPath);
+		for(int i = 0; i < selectedListIDs.size(); i++) {
+			selectedLists.add(DBManager.getListByID(selectedListIDs.get(i)));
+		}
+		
+		VocabPair usedLangs = selectedLists.get(0).getLangs();
+		
+		// check whether the selected lists have the same languages
+		for(int j = 0; j < selectedLists.size(); j++) {
+			if(!selectedLists.get(j).getLangs().compareTo(usedLangs)) {
+				Logger.log(MessageType.WARNING, "lists did contain more than 2 languages");
+				response.sendRedirect(backPath);
 				return;
 			}
 		}
-		else {
-			Logger.log(MessageType.WARNING, "no lists were selected");
+		
+		
+		boolean promptedLangIsCorrect = usedLangs.contains(promptedLang);
+		if(!promptedLangIsCorrect) {
+			Logger.log(MessageType.WARNING, "prompted language not in selected lists");
+			response.sendRedirect(backPath);
+			return;
 		}
 		
-		doGet(request, response);
+		VocabRound r = new VocabRound(false, selectedListIDs, new LinkedList<Long>(), usedLangs, promptedLang, 0f, 0, 0, 1);
+		Logger.log("success");
+		Logger.log(r.toString());
+		if(!DBManager.save(r)) {
+			Logger.log(MessageType.WARNING, "round " + r.toString() + " could not be saved or updated");
+			response.sendRedirect(backPath);
+			return;
+		}
+		
+		response.sendRedirect(backPath);
 	}
 
 }

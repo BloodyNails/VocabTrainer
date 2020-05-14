@@ -10,4 +10,6 @@ public class VocabTimer {
 	public float getCurrTime() {
 		return this.currTime;
 	}
+	
+	// TODO make timer usable
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bloodynails.Config;
 import com.bloodynails.VocabList;
 import com.bloodynails.VocabWord;
 import com.bloodynails.database.DBManager;
@@ -23,23 +24,44 @@ public class ListDetailView extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private static VocabList list;
+	private static String backPath = Config.externalListsPath;
 	
     public ListDetailView() {
         super();
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if(request.getParameter("listID") != null) {
-			Long listID = Long.parseLong(request.getParameter("listID"));
-			if(listID != null && listID > -1) {
-				list = DBManager.getListByID(listID);
-				LinkedList<VocabWord> words = list.getWords();
-				
-				request.setAttribute("wordCount", words.size());
-				request.setAttribute("words", words);
-				request.setAttribute("list", list);
-			}
+		String listIDStr = request.getParameter("listID");
+		if(listIDStr == null) {
+			Logger.log(MessageType.WARNING, "listID parameter is null");
+			response.sendRedirect(backPath);
+			return;
 		}
+		if(listIDStr.isEmpty()) {
+			Logger.log(MessageType.WARNING, "listID parameter is empty");
+			response.sendRedirect(backPath);
+			return;
+		}
+		
+		Long listID = Long.parseLong(listIDStr);
+		if(listID < 0) {
+			Logger.log(MessageType.WARNING, "listID must be equal to or greater than 0");
+			response.sendRedirect(backPath);
+			return;
+		}
+		
+		list = DBManager.getListByID(listID);
+		if(list == null) {
+			Logger.log(MessageType.WARNING, "list #" + listID  + " could not be found");
+			response.sendRedirect(backPath);
+			return;
+		}
+		
+		LinkedList<VocabWord> words = list.getWords();
+		
+		request.setAttribute("wordCount", words.size());
+		request.setAttribute("words", words);
+		request.setAttribute("list", list);
 		
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");

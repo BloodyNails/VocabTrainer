@@ -11,7 +11,14 @@ public class VocabWord extends DBObj{
 	
 	public VocabWord(Long listID, String wordLang1, String wordLang2) {
 		super(DBManager.getNextWordID(), DBObjType.WORD);
-		if(listID < 0) throw new IllegalArgumentException("listID must be greater or equal to 0");
+		
+		if(listID == null) throw new NullPointerException("listID must not be null");
+		if(listID < 0) throw new IllegalArgumentException("listID must be equal to or greater than 0");
+		if(wordLang1 == null) throw new NullPointerException("wordLang1 must not be null");
+		if (wordLang1.isEmpty()) throw new IllegalArgumentException("wordLang1 String is empty");
+		if(wordLang2 == null) throw new NullPointerException("wordLang2 must not be null");
+		if (wordLang2.isEmpty()) throw new IllegalArgumentException("wordLang2 String is empty");
+		
 		this.listID = listID;
 		this.wordLang1 = wordLang1;
 		this.wordLang2 = wordLang2;
@@ -19,8 +26,16 @@ public class VocabWord extends DBObj{
 	
 	public VocabWord(Long wordID, Long listID, String wordLang1, String wordLang2) {
 		super(wordID, DBObjType.WORD);
+		
+		if(wordID == null) throw new NullPointerException("wordID must not be null");
 		if(wordID < 0) throw new IllegalArgumentException("wordID must be greater or equal to 0");
-		if(listID < 0) throw new IllegalArgumentException("listID must be greater or equal to 0");
+		if(listID == null) throw new NullPointerException("listID must not be null");
+		if(listID < 0) throw new IllegalArgumentException("listID must be equal to or greater than 0");
+		if(wordLang1 == null) throw new NullPointerException("wordLang1 must not be null");
+		if (wordLang1.isEmpty()) throw new IllegalArgumentException("wordLang1 String is empty");
+		if(wordLang2 == null) throw new NullPointerException("wordLang2 must not be null");
+		if (wordLang2.isEmpty()) throw new IllegalArgumentException("wordLang2 String is empty");
+		
 		this.listID = listID;
 		this.wordLang1 = wordLang1;
 		this.wordLang2 = wordLang2;

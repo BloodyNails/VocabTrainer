@@ -20,7 +20,6 @@ public class ContinueRound extends HttpServlet {
 	
 	private static VocabCycle currentCycle;
 	private static VocabRound currentRound;
-	
 	private static String backPath = Config.externalVocabularyPath;
        
     public ContinueRound() {
@@ -28,7 +27,8 @@ public class ContinueRound extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		response.sendRedirect(Config.externalVocabularyPath);
+		Logger.log(MessageType.WARNING, "Continue Round not possible yet");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

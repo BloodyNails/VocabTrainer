@@ -21,7 +21,7 @@ public class VocabPair {
 	}
 	
 	public boolean contains(VocabLang lang) {
-		return (lang == lang1 || lang == lang2);
+		return (lang == this.lang1 || lang == this.lang2);
 	}
 	
 	public static VocabPair parseLangs(String lang1, String lang2) {

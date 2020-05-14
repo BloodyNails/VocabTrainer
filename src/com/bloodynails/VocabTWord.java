@@ -12,6 +12,13 @@ public class VocabTWord extends DBObj {
 	
 	public VocabTWord(Long twordID, VocabWord word, Long cycleID, boolean isPrompted, boolean isCorrect) {
 		super(twordID, DBObjType.WORDTRAINING);
+		
+		if(twordID == null) throw new NullPointerException("tWordID must not be null");
+		if(twordID < 0) throw new IllegalArgumentException("tWordID must be equal to or greater than 0");
+		if(word == null) throw new NullPointerException("word must not be null");
+		if(cycleID == null) throw new NullPointerException("cycleID must not be null");
+		if(cycleID < 0) throw new IllegalArgumentException("cycleID must be equal to or greater than 0");
+		
 		this.word = word;
 		this.cycleID = cycleID;
 		this.isPrompted = isPrompted;
@@ -20,6 +27,12 @@ public class VocabTWord extends DBObj {
 	
 	public VocabTWord(VocabWord word, Long cycleID, boolean isPrompted, boolean isCorrect) {
 		super(DBManager.getNextTWordID(), DBObjType.WORDTRAINING);
+		
+		if(super.getID() < 0) throw new IllegalArgumentException("tWordID must be equal to or greater than 0");
+		if(word == null) throw new NullPointerException("word must not be null");
+		if(cycleID == null) throw new NullPointerException("cycleID must not be null");
+		if(cycleID < 0) throw new IllegalArgumentException("cycleID must be equal to or greater than 0");
+		
 		this.word = word;
 		this.cycleID = cycleID;
 		this.isPrompted = isPrompted;

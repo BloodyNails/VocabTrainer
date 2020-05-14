@@ -11,17 +11,15 @@ import com.bloodynails.logging.MessageType;
 public class VocabRound extends DBObj {
 	// TODO: make it so only lists of same languages can be selected
 
-	private boolean completed = false; // was the round completed the last time the user interacted with it
-	private LinkedList<Long> listIDs = new LinkedList<Long>(); // IDs of all lists which are selected before creating
-																// round
-	private LinkedList<Long> cycleIDs = new LinkedList<Long>(); // IDs of the cycles which were
+	private boolean completed; // was the round completed the last time the user interacted with it
+	private LinkedList<Long> listIDs; // IDs of all lists which are selected before creating round
+	private LinkedList<Long> cycleIDs; // IDs of the cycles which were
 	private VocabPair languages;
 	private VocabLang promptedLang;
-	private float time = 0f; // total time which was spent during this round (collect values from the timers
-	// inside the cycles)
-	private int trueCount = 0; // amount of submitted inputs with true answers (sum of all cycles)
-	private int falseCount = 0; // amount of submitted inputs with false answers (sum of all cycles)
-	private float tfRatio = 1f; // average ration of all cycles
+	private float time; // total time which was spent during this round (collect values from the timers inside the cycles)
+	private int trueCount; // amount of submitted inputs with true answers (sum of all cycles)
+	private int falseCount; // amount of submitted inputs with false answers (sum of all cycles)
+	private float tfRatio; // average ration of all cycles
 
 	public VocabRound(Long roundID, boolean completed, LinkedList<Long> listIDs, LinkedList<Long> cycleIDs,
 			VocabPair languages, VocabLang promptedLang, float time, int trueCount, int falseCount, float tfRatio) {
@@ -92,16 +90,26 @@ public class VocabRound extends DBObj {
 	}
 
 	public VocabRound removeWrongLangs() {
-		for (int i = 0; i < this.listIDs.size(); i++) {
-			if (DBManager.getListByID(listIDs.get(i)) != null) {
-				VocabPair listLangs = DBManager.getListByID(listIDs.get(i)).getLangs();
-				if (!listLangs.compareTo(languages)) {
-					listIDs.remove(i);
-				}
-			} else {
+		if(listIDs == null) return null;
+		if(listIDs.size() < 1) return null;
+		
+		for (int i = 0; i < listIDs.size(); i++) {
+			VocabList list = DBManager.getListByID(listIDs.get(i));
+			if(list == null) {
 				Logger.log(MessageType.WARNING, "List specified inside round is not found DB");
+				return null;
+			}
+			
+			VocabPair listLangs = list.getLangs();
+			if (!listLangs.compareTo(languages)) {
+				listIDs.remove(i);
 			}
 		}
+		
+		if(listIDs.size() < 1) {
+			Logger.log(MessageType.WARNING, "no more lists in round #" + super.getID() + " after deleting the wrong langauges");
+		}
+		
 		return this;
 	}
 
@@ -141,7 +149,8 @@ public class VocabRound extends DBObj {
 
 	public String[] getListDescriptions() {
 		if (listIDs == null) return null;
-		if (listIDs.size() < 1) return new String[0];
+		if (listIDs.size() < 1) return new String[] {"no lists"};
+		
 		String[] descriptions = new String[listIDs.size()];
 		for (int i = 0; i < listIDs.size(); i++) {
 			if (DBManager.getListByID(listIDs.get(i)) == null) {
