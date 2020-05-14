@@ -1,5 +1,4 @@
-<%@page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
@@ -27,7 +26,6 @@
 							<input class="big-btn back-btn" type="submit" value="BACK">
 						</form>
 					</li>
-
 				</ul>
 			</nav>
 		</div>
@@ -38,7 +36,6 @@
 		<div class="container">
 			<p>the lists you select must not have more than two different languages</p>
 			<p>the prompted language must be contained in your selected lists' languages</p>
-
 			<form id="newRound" action="/VocabTrainer/Training/Vocabulary/create" method="POST">
 				<table>
 					<thead>
@@ -63,21 +60,16 @@
 						</c:forEach>
 					</tbody>
 				</table>
-
-				<label>prompted language: </label> <select name="promptedLang" form="newRound">
-				<c:forEach var="lang" items="${langs}">
-					<option value="${lang.toString()}">${lang.toString()}</option>
-				</c:forEach>
-				<input class="big-btn" type="submit" value="CREATE NEW ROUND">
+				<label>prompted language: </label> 
+				<select name="promptedLang" form="newRound">
+					<c:forEach var="lang" items="${langs}">
+						<option value="${lang.toString()}">${lang.toString()}</option>
+					</c:forEach>
 				</select>
+				<input class="big-btn" type="submit" value="CREATE NEW ROUND">
 			</form>
-
-			
-			
 		</div>
 	</section>
-
-
-
+	
 </body>
 </html>

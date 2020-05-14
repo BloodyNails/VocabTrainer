@@ -1,5 +1,4 @@
-<%@page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
@@ -88,8 +87,6 @@
 						</c:forEach>
 					</select> <input class="big-btn" type="submit" value="SUBMIT">
 				</form>
-
-
 			</div>
 		</div>
 	</section>
