@@ -3,8 +3,9 @@ package com.bloodynails;
 import com.bloodynails.database.DBManager;
 import com.bloodynails.database.DBObj;
 import com.bloodynails.database.DBObjType;
+import com.bloodynails.database.Savable;
 
-public class VocabWord extends DBObj{
+public class VocabWord extends DBObj implements Savable{
 	private Long listID;
 	private String wordLang1;
 	private String wordLang2;
@@ -56,5 +57,22 @@ public class VocabWord extends DBObj{
 	
 	public String getWordLang2() {
 		return this.wordLang2;
+	}
+	
+	
+	// Interface Mthods
+	@Override
+	public boolean save() {
+		return DBManager.save(this);
+	}
+
+	@Override
+	public Boolean isSaved() {
+		return DBManager.isSaved(type, ID);
+	}
+
+	@Override
+	public boolean delete() {
+		return DBManager.deleteWordByID(ID);
 	}
 }

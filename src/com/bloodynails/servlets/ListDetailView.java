@@ -89,7 +89,7 @@ public class ListDetailView extends HttpServlet {
 					if (list != null) {
 						VocabWord w = new VocabWord(list.getID(), wordLang1, wordLang2);
 						if (w != null) {
-							if (!DBManager.save(w)) {
+							if (!w.save()) {
 								Logger.log(MessageType.WARNING, "word: " + w.toString() + " could not be saved");
 							}
 						}

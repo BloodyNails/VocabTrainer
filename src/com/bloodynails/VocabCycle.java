@@ -5,8 +5,9 @@ import java.util.LinkedList;
 import com.bloodynails.database.DBManager;
 import com.bloodynails.database.DBObj;
 import com.bloodynails.database.DBObjType;
+import com.bloodynails.database.Savable;
 
-public class VocabCycle extends DBObj {
+public class VocabCycle extends DBObj implements Savable {
 	private Long roundID; // ID of the round the cycle belongs to
 	private boolean completed; // was the cycle completed the last time the user interacted with it
 	private int wordCount; // amount of words which have been asked during this cycle. this value changes based on the answers of previous cycles
@@ -89,5 +90,21 @@ public class VocabCycle extends DBObj {
 		return "cycleID: " + ID + "\nroundID: " + roundID + "\ncompleted: " + completed + "\nwordCount: " + wordCount
 				+ "\ncurrWordID: " + currTWordID + "\ntrueCount: " + trueCount + "\nfalseCount: " + falseCount
 				+ "\ntfRatio: " + tfRatio + "\ntime: " + timer.getCurrTime();
+	}
+	
+	// Interface Mthods
+	@Override
+	public boolean save() {
+		return DBManager.save(this);
+	}
+	
+	@Override
+	public Boolean isSaved() {
+		return DBManager.isSaved(type, ID);
+	}
+	
+	@Override
+	public boolean delete() {
+		return DBManager.deleteCycleByID(ID);
 	}
 }

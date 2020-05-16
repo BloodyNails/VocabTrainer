@@ -13,12 +13,12 @@ public class DBObj {
 		this.ID = ID;
 		this.type = type;
 	}
-
+	
 	public Long getID() {
-		return this.ID;
+		return ID;
 	}
-
+	
 	public DBObjType getType() {
-		return this.type;
+		return type;
 	}
 }

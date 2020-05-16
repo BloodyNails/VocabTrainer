@@ -5,8 +5,9 @@ import java.util.LinkedList;
 import com.bloodynails.database.DBManager;
 import com.bloodynails.database.DBObj;
 import com.bloodynails.database.DBObjType;
+import com.bloodynails.database.Savable;
 
-public class VocabList extends DBObj{
+public class VocabList extends DBObj implements Savable{
 	private String description;
 	private VocabPair languages;
 	
@@ -14,7 +15,7 @@ public class VocabList extends DBObj{
 		super(DBManager.getNextListID(), DBObjType.LIST);
 		
 		if(description == null) throw new NullPointerException("description must not be null");
-		if (description.isEmpty()) throw new IllegalArgumentException("description of list #" + super.getID() + " is empty");
+		if (description.isEmpty()) throw new IllegalArgumentException("description of list #" + ID + " is empty");
 		if(languages == null) throw new NullPointerException("languages must not be null");
 		
 		this.description = description;
@@ -27,7 +28,7 @@ public class VocabList extends DBObj{
 		if(listID == null) throw new NullPointerException("listID must not be null");
 		if(listID < 0) throw new IllegalArgumentException("listID must be equal to or greater than 0");
 		if(description == null) throw new NullPointerException("description must not be null");
-		if (description.isEmpty()) throw new IllegalArgumentException("description of list #" + super.getID() + " is empty");
+		if (description.isEmpty()) throw new IllegalArgumentException("description of list #" + ID + " is empty");
 		if(languages == null) throw new NullPointerException("languages must not be null");
 		
 		this.description = description;
@@ -58,5 +59,22 @@ public class VocabList extends DBObj{
 	
 	public LinkedList<VocabWord> getWords() {
 		return DBManager.getWordsByListID(super.ID);
+	}
+	
+	
+	// Interface Mthods
+	@Override
+	public boolean save() {
+		return DBManager.save(this);
+	}
+	
+	@Override
+	public Boolean isSaved() {
+		return DBManager.isSaved(type, ID);
+	}
+	
+	@Override
+	public boolean delete() {
+		return DBManager.deleteListByID(ID);
 	}
 }

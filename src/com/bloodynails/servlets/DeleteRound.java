@@ -34,5 +34,4 @@ public class DeleteRound extends HttpServlet {
 		}
 		doGet(request, response);
 	}
-
 }

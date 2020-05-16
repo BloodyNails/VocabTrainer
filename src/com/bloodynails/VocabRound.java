@@ -5,10 +5,11 @@ import java.util.LinkedList;
 import com.bloodynails.database.DBManager;
 import com.bloodynails.database.DBObj;
 import com.bloodynails.database.DBObjType;
+import com.bloodynails.database.Savable;
 import com.bloodynails.logging.Logger;
 import com.bloodynails.logging.MessageType;
 
-public class VocabRound extends DBObj {
+public class VocabRound extends DBObj implements Savable{
 	// TODO: make it so only lists of same languages can be selected
 
 	private boolean completed; // was the round completed the last time the user interacted with it
@@ -107,7 +108,7 @@ public class VocabRound extends DBObj {
 		}
 		
 		if(listIDs.size() < 1) {
-			Logger.log(MessageType.WARNING, "no more lists in round #" + super.getID() + " after deleting the wrong langauges");
+			Logger.log(MessageType.WARNING, "no more lists in round #" + ID + " after deleting the wrong langauges");
 		}
 		
 		return this;
@@ -213,5 +214,21 @@ public class VocabRound extends DBObj {
 	public void addCycleID(Long cycleID) {
 		cycleIDs.add(cycleID);
 	}
-
+	
+	
+	// Interface Mthods
+	@Override
+	public boolean save() {
+		return DBManager.save(this);
+	}
+	
+	@Override
+	public Boolean isSaved() {
+		return DBManager.isSaved(type, ID);
+	}
+	
+	@Override
+	public boolean delete() {
+		return DBManager.deleteRoundByID(ID);
+	}
 }

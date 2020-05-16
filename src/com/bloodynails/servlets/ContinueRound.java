@@ -107,11 +107,11 @@ public class ContinueRound extends HttpServlet {
 			Logger.log(MessageType.DEBUG, "new cycle:\n"+currentCycle.toString());
 			
 			// save cycle AND tWord
-			if(!DBManager.save(currentCycle)) {
+			if(!currentCycle.save()) {
 				Logger.log(MessageType.ERROR, "cycle #"+currentCycle.getID()+" could not be saved");
 				response.sendRedirect(Config.externalVocabularyPath);
 				return;
-			} else if(!DBManager.save(tWord)) {
+			} else if(!tWord.save()) {
 				Logger.log(MessageType.ERROR, "tWord #"+tWord.getID()+" could not be saved");
 				response.sendRedirect(Config.externalVocabularyPath);
 				return;

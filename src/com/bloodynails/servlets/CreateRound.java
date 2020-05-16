@@ -114,7 +114,7 @@ public class CreateRound extends HttpServlet {
 		}
 		
 		VocabRound r = new VocabRound(false, selectedListIDs, new LinkedList<Long>(), usedLangs, promptedLang, 0f, 0, 0, 1);
-		if(!DBManager.save(r)) Logger.log(MessageType.WARNING, "round " + r.toString() + " could not be saved or updated");
+		if(!r.save()) Logger.log(MessageType.WARNING, "round " + r.toString() + " could not be saved or updated");
 		response.sendRedirect(backPath);
 	}
 

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bloodynails.Config;
 import com.bloodynails.VocabLang;
 import com.bloodynails.VocabList;
 import com.bloodynails.VocabPair;
@@ -57,11 +58,18 @@ public class Lists extends HttpServlet {
 			String lang1 = request.getParameter("lang1");
 			String lang2 = request.getParameter("lang2");
 			if(description == null) throw new NullPointerException("description should not be null on creating a new list");
+			if(description.isEmpty()) {
+				Logger.log(MessageType.WARNING, "Description is empty on creating a new list");
+				response.sendRedirect(Config.externalListsPath);
+				return;
+			}
 			if(lang1 == null) throw new NullPointerException("lang1 should not be null");
 			if(lang2 == null) throw new NullPointerException("lang2 should not be null");
-			if(description.isEmpty()) Logger.log(MessageType.WARNING, "Description is empty on creating a new list");
 			VocabPair langs = new VocabPair(VocabLang.parseLang(lang1), VocabLang.parseLang(lang2));
-			DBManager.save(new VocabList(description, langs));
+			VocabList list = new VocabList(description, langs);
+			if(!list.save()) {
+				Logger.log(MessageType.ERROR, "error saving list: " + list.toString());
+			}
 		}
 		
 		doGet(request, response);

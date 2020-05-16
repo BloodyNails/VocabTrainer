@@ -1,7 +1,6 @@
 package com.bloodynails.database;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,31 +21,49 @@ import com.bloodynails.logging.MessageType;
 // TODO: getNext...ID should return the lowest possible ID
 public class DBManager {
 
-	public static final Connection connection = getConnection();
-
+	private static final String url = Config.dbUrl;
+	private static final String user = Config.dbUser;
+	private static final String pass = Config.dbPass;
+	
+	private static DBConnector dbConnector = new DBConnector(url, user, pass);
+	private static Connection connection = dbConnector.getConnection();
 	private static Statement s;
 
-	private static Connection getConnection() {
-		final String url = Config.dbUrl;
-		final String user = Config.dbUser;
-		final String pass = Config.dbPass;
+	private static boolean execute(String query) {
+		if(connection == null) return false;
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection connection = DriverManager.getConnection(url, user, pass);
-			Logger.log("Database connection succeeded.");
-			return connection;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return null;
+			s = connection.createStatement();
+			s.execute(query);
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			return false;
 		}
 	}
-
+	
+	public static Boolean isSaved(DBObjType type, Long ID) {
+		if(type == null) return null;
+		if(ID == null || ID < 0) return null;
+		
+		DBObjType word = DBObjType.WORD;
+		DBObjType tword = DBObjType.TWORD;
+		DBObjType list = DBObjType.LIST;
+		DBObjType round = DBObjType.ROUND;
+		DBObjType cycle = DBObjType.CYCLE;
+		
+		if(type == word) return (getWordByID(ID) == null) ? false : true;
+		if(type == tword) return (getTWordByID(ID) == null) ? false : true;
+		if(type == list) return (getListByID(ID) == null) ? false : true;
+		if(type == round) return (getRoundByID(ID) == null) ? false : true;
+		if(type == cycle) return (getCycleByID(ID) == null) ? false : true;
+		
+		return null;
+	}
+	
 	public static boolean save(VocabWord w) {
 		if (w == null) return false;
-		if (isSaved(w.getID())) {
+		
+		if (isSaved(w.getType(), w.getID())) {
 			Logger.log("Updating VocabWord not implemented yet");
 			// TODO implement update(VocabWord)
 			return false;
@@ -59,12 +76,10 @@ public class DBManager {
 		}
 	}
 
-	public static boolean isSaved(Long wordID) {
-		return (getWordByID(wordID) == null) ? false : true;
-	}
-
 	public static boolean save(VocabTWord wt) {
-		if (isSaved(wt)) {
+		if(wt == null) return false;
+		
+		if (isSaved(wt.getType(), wt.getID())) {
 			Logger.log(MessageType.WARNING, "Updating VocabWordTraining not implemented yet");
 			// TODO implement update(VocabTWord)
 			return false;
@@ -78,12 +93,10 @@ public class DBManager {
 		}
 	}
 
-	public static boolean isSaved(VocabTWord wt) {
-		return (getTWordByID(wt.getID()) == null) ? false : true;
-	}
-
 	public static boolean save(VocabList l) {
-		if (isSaved(l)) {
+		if(l == null) return false;
+		
+		if (isSaved(l.getType(), l.getID())) {
 			Logger.log(MessageType.WARNING, "Updating VocabList not implemented yet");
 			// TODO implement update(VocabList)
 			return false;
@@ -97,12 +110,10 @@ public class DBManager {
 		}
 	}
 
-	public static boolean isSaved(VocabList l) {
-		return (getListByID(l.getID()) == null) ? false : true;
-	}
-
 	public static boolean save(VocabRound r) {
-		if (isSaved(r)) {
+		if(r == null) return false;
+		
+		if (isSaved(r.getType(), r.getID())) {
 			Logger.log(MessageType.WARNING, "Updating VocabRound not implemented yet");
 			// TODO implement update(VocabRound)
 			return false;
@@ -117,13 +128,11 @@ public class DBManager {
 			return execute(query);
 		}
 	}
-	
-	public static boolean isSaved(VocabRound r) {
-		return (getRoundByID(r.getID()) == null) ? false : true;
-	}
 
 	public static boolean save(VocabCycle c) {
-		if (isSaved(c)) {
+		if(c == null) return false;
+		
+		if (isSaved(c.getType(), c.getID())) {
 			Logger.log("Updating VocabCycle not implemented yet");
 			return false;
 		} else {
@@ -138,22 +147,9 @@ public class DBManager {
 		}
 	}
 
-	public static boolean isSaved(VocabCycle c) {
-		return (getCycleByID(c.getID()) == null) ? false : true;
-	}
-
-	private static boolean execute(String query) {
-		try {
-			s = connection.createStatement();
-			s.execute(query);
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
 	public static Long getNextWordID() {
+		if(connection == null) return null;
+		
 		final String query = "SELECT word_id FROM " + Config.dbTableWords + " ORDER BY word_id ASC;";
 		Long id = -1L;
 		Long tmp_id = -1L;
@@ -171,6 +167,8 @@ public class DBManager {
 	}
 
 	public static Long getNextTWordID() {
+		if(connection == null) return null;
+		
 		final String query = "SELECT tword_id FROM " + Config.dbTableTWords + " ORDER BY word_id ASC;";
 		Long id = -1L;
 		Long tmp_id = -1L;
@@ -188,6 +186,8 @@ public class DBManager {
 	}
 
 	public static Long getNextListID() {
+		if(connection == null) return null;
+		
 		final String query = "SELECT list_id FROM " + Config.dbTableLists + " ORDER BY list_id ASC;";
 		Long id = -1L;
 		Long tmp_id = -1L;
@@ -205,6 +205,8 @@ public class DBManager {
 	}
 
 	public static Long getNextRoundID() {
+		if(connection == null) return null;
+		
 		final String query = "SELECT round_id FROM " + Config.dbTableRounds + " ORDER BY round_id ASC;";
 		Long id = -1L;
 		Long tmp_id = -1L;
@@ -222,6 +224,8 @@ public class DBManager {
 	}
 	
 	public static Long getNextCycleID() {
+		if(connection == null) return null;
+		
 		final String query = "SELECT cycle_id FROM " + Config.dbTableCycles + " ORDER BY cycle_id ASC;";
 		Long id = -1L;
 		Long tmp_id = -1L;
@@ -239,6 +243,8 @@ public class DBManager {
 	}
 
 	public static LinkedList<VocabList> getAllLists() {
+		if(connection == null) return null;
+		
 		LinkedList<VocabList> lists = new LinkedList<VocabList>();
 
 		final String query = "SELECT * FROM " + Config.dbTableLists + ";";
@@ -263,6 +269,8 @@ public class DBManager {
 	}
 
 	public static LinkedList<VocabRound> getAllRounds() {
+		if(connection == null) return null;
+		
 		LinkedList<VocabRound> rounds = new LinkedList<VocabRound>();
 
 		final String query = "SELECT * FROM " + Config.dbTableRounds + ";";
@@ -323,6 +331,7 @@ public class DBManager {
 
 	public static LinkedList<VocabWord> getWordsByListID(Long listID) {
 		if(listID == null || listID < 0) return null;
+		if(connection == null) return null;
 		
 		LinkedList<VocabWord> words = new LinkedList<VocabWord>();
 		final String query = "SELECT * FROM " + Config.dbTableWords + " WHERE list_id = " + listID.toString() + ";";
@@ -351,6 +360,7 @@ public class DBManager {
 
 	public static LinkedList<VocabTWord> getTWordsByWordID(Long wordID) {
 		if(wordID == null || wordID < 0) return null;
+		if(connection == null) return null;
 		
 		LinkedList<VocabTWord> tWords = new LinkedList<VocabTWord>();
 		final String query = "SELECT * FROM " + Config.dbTableTWords + " WHERE word_id = " + wordID.toString()
@@ -376,6 +386,7 @@ public class DBManager {
 
 	public static LinkedList<VocabTWord> getTWordsByCycleID(Long cycleID) {
 		if(cycleID == null || cycleID < 0) return null;
+		if(connection == null) return null;
 		
 		LinkedList<VocabTWord> tWords = new LinkedList<VocabTWord>();
 		final String query = "SELECT * FROM " + Config.dbTableTWords + " WHERE cycle_id = " + cycleID.toString()
@@ -401,6 +412,7 @@ public class DBManager {
 
 	public static LinkedList<VocabCycle> getCyclesByRoundID(Long roundID) {
 		if(roundID == null || roundID < 0) return null;
+		if(connection == null) return null;
 		
 		LinkedList<VocabCycle> cycles = new LinkedList<VocabCycle>();
 		final String query = "SELECT * FROM " + Config.dbTableCycles + " WHERE round_id = " + roundID.toString()
@@ -430,6 +442,7 @@ public class DBManager {
 
 	public static VocabList getListByID(Long listID) {
 		if(listID == null || listID < 0) return null;
+		if(connection == null) return null;
 		
 		final String query = "SELECT * FROM " + Config.dbTableLists + " WHERE list_id = " + listID.toString() + ";";
 		try {
@@ -452,6 +465,7 @@ public class DBManager {
 
 	public static VocabWord getWordByID(Long wordID) {
 		if (wordID == null || wordID < 0) return null;
+		if (connection == null) return null;
 		
 		final String query = "SELECT * FROM " + Config.dbTableWords + " WHERE word_id = " + wordID.toString() + ";";
 		try {
@@ -471,6 +485,7 @@ public class DBManager {
 
 	public static VocabTWord getTWordByID(Long tWordID) {
 		if (tWordID == null || tWordID < 0) return null;
+		if(connection == null) return null;
 		
 		final String query = "SELECT * FROM " + Config.dbTableTWords + " WHERE tword_id = " + tWordID.toString()
 				+ ";";
@@ -495,6 +510,7 @@ public class DBManager {
 
 	public static VocabRound getRoundByID(Long roundID) {
 		if (roundID == null || roundID < 0) return null;
+		if(connection == null) return null;
 		
 		final String query = "SELECT * FROM " + Config.dbTableRounds + " WHERE round_id = " + roundID.toString() + ";";
 
@@ -536,6 +552,7 @@ public class DBManager {
 
 	public static VocabCycle getCycleByID(Long cycleID) {
 		if (cycleID == null || cycleID < 0) return null;
+		if (connection == null) return null;
 		
 		final String query = "SELECT * FROM " + Config.dbTableCycles + " WHERE cycle_id = " + cycleID.toString() + ";";
 		try {
@@ -581,7 +598,7 @@ public class DBManager {
 
 	public static boolean deleteWordByID(Long wordID) {
 		if(wordID == null || wordID < 0) return false;
-		if(!isSaved(wordID)) return false;
+		if(!isSaved(DBObjType.WORD, wordID)) return false;
 		
 		final String query = "DELETE FROM " + Config.dbTableWords + " WHERE word_id = " + wordID.toString() + ";";
 		

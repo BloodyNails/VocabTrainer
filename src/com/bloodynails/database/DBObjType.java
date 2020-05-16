@@ -5,5 +5,5 @@ public enum DBObjType {
 	WORD,
 	ROUND,
 	CYCLE, 
-	WORDTRAINING
+	TWORD
 }
