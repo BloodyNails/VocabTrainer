@@ -1,4 +1,8 @@
 TODO:
+	- !IMPORTANT: 
+		- I dont have an closeBrowser event in java
+		- I need javascript to POST something to server upon exiting
+		
 	- implement html warnings
 		- maybe add a js script and callit from java if possible
 		- possible warnings:
@@ -28,41 +32,46 @@ Some convenient additions in the future:
 	- change lang1 and lang2 of lists
 	
 VocabTrainer/Training:
-	- /Vocabulary:
-		Sequence:
-			- list of rounds
-			- create new round / delete round / continue paused round / check stats from finished round
+	- Vocabulary
+		- ability to create a new round
+		- lists all completed/incompleted rounds
+		- you can open detail view of completed rounds which show stats 
 		
-			-1: select lists you want to get asked
-			0: check if interrupted round:
-					yes: get last_cycle_id from round, check if cycle interrupted: 
-						yes: get curr_word_id from cycle, load word and continue with (5), start timer again
-						no: start new cycle
-					no: start a new round go to (1)
-			1: (select specific list || select all lists) -> choose language to be prompted
-			2: all words from selected lists read from "words" and written to "vocab_words" with: prompted = false
-			3: create cycle (false_count = 0, true_count = 0), add cycle_id to cycle_ids in "rounds", count words in "vocab_words" and set cycle->word_count to counted value, set prompted to false for all words in "vocab_words", start timer
-			4: create prompt: get all "prompted == false" words from "vocab_words", 
-				if amount == 0: stop timer, end cycle
-					check false_count: 
-						if fc == 0: end round (6)
-						if fc > 0: start new cycle (3)
-				if amount > 0: get random word from "prompted == false" words
-			5: input false: false_count+1 (code and db), mark word as prompted in "vocab_words", go to (4)
-				input true: true_count+1 (code and db), delete word in "vocab_words", go to (4)
-			6: round finished: get all stats from cycles, ...
-		
-		- make every round cycle based: first cycle all words, second cycle the words you didn't know at first, and so on... until you entered every word correct
-		- layout:
-			- timer which increases whilst the round proceeds
-			- label: question (get a random word from the amount of words which has been selected before, which has not been questioned yet)
-			- input: answer (translate the word from label to your selected language)
-			- button: submit (send answer to servlet and check for errors)
-		- stats: 
-			correctness (therefore also: total number of false/true inputs), 
-			time -> therefore add timer and display it on every round
-			total number of cycles, 
-			avg. cycles per round
+		- creating round:
+			- select lists which you want to get prompted
+			- languages of selcted lists must be 2
+			- select the language you want to be prompted (must be one of the 2 langs from above)
+			- after creating round save it and create the first cycle and save it too
+			- after that iterate over all the words from the lists and create the twords and save them too
+			- everything which belongs to this round should be saved in db now
+			
+		- continue round:
+			- loadCyclesByRoundID().getLast() -> check if finished
+			- if(finished) create a new cycle:
+				- get all the twords from last cycle
+				- remove the correct twords from the list and pass it to the new cycle
+				- create a new VocabTimer()
+			- else continue cycle:
+				- getTWordsByCycleID and remove the ones which were already prompted
+				- create new VocabTimer(time from db)
+			- continue/start timer
+
+Insert into web.xml for utf-8 support:
+
+    <filter>
+        <filter-name>setCharacterEncodingFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <async-supported>true</async-supported>
+    </filter>
+
+	<filter-mapping>
+		<filter-name>setCharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 	
 Database Stuff:
 
@@ -128,23 +137,6 @@ Database Stuff:
 			total_true_false_ratio (avg. overall ratio)
 			worst_list (the list you should learn the most, because you had lots of false inputs)
 		)
-		
-Insert into web.xml for utf-8 support:
-
-    <filter>
-        <filter-name>setCharacterEncodingFilter</filter-name>
-        <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-        <async-supported>true</async-supported>
-    </filter>
-
-	<filter-mapping>
-		<filter-name>setCharacterEncodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 
 db_init.sql :
 			

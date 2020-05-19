@@ -11,6 +11,7 @@ public class VocabWord extends DBObj implements Savable{
 	private String wordLang2;
 	
 	public VocabWord(Long listID, String wordLang1, String wordLang2) {
+		
 		super(DBManager.getNextWordID(), DBObjType.WORD);
 		
 		if(listID == null) throw new NullPointerException("listID must not be null");
@@ -26,6 +27,7 @@ public class VocabWord extends DBObj implements Savable{
 	}
 	
 	public VocabWord(Long wordID, Long listID, String wordLang1, String wordLang2) {
+		
 		super(wordID, DBObjType.WORD);
 		
 		if(wordID == null) throw new NullPointerException("wordID must not be null");

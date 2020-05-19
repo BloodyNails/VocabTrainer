@@ -107,6 +107,10 @@
 			</table>
 		</div>
 	</section>
+	
+	<script type="text/javascript">
+		/* tell java the browser was closed */
+	</script>
 
 </body>
 </html>
